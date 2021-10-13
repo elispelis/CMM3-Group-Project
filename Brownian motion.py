@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation as animation
 
-nsample = 10000
+nsample = 1000
 T=1.
 D = 0.1
 particles = 3
