@@ -33,7 +33,7 @@ for coordinates in pos:
 t_max = 5  # simulation time in seconds
 dt = 0.01 # step size
 N = 2 ** 10  # Number of particles
-D = 0.01  # diffusivity = 0.1 for final 
+D = 0.1  # diffusivity = 0.1 for final 
 # Domain size
 x_min = -1
 x_max = 1
@@ -51,9 +51,6 @@ rand_rad = circle_r * np.sqrt(np.random.rand(N))
 rand_angle = 2 * np.pi * np.random.rand(N)
 x = circle_x + rand_rad * np.cos(rand_angle)
 y = circle_y + rand_rad * np.sin(rand_angle)
-
-x_i = np.copy(x)
-y_i = np.copy(y)
 
 def get_velocities(x, y):
     x_coordinates = np.round((x - np.amin(x)) / (np.amax(x) - np.amin(x)) * (row_length - 1)).astype(int)
