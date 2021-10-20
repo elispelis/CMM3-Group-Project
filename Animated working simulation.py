@@ -33,7 +33,7 @@ for coordinates in pos:
 t_max = 5  # simulation time in seconds
 dt = 0.01 # step size
 N = 2 ** 10  # Number of particles
-D = 0.1  # diffusivity = 0.1 for final 
+D = 0.01  # diffusivity = 0.01 for final 
 # Domain size
 x_min = -1
 x_max = 1
@@ -41,12 +41,12 @@ y_min = -1
 y_max = 1
 
 #Blue particle initial postion
-circle_r=x_max/4 #circle radius
+circle_r=0.3 #circle radius
 #centre of circle coordinates
 circle_x = 0
 circle_y = 0
 
-#Generate random point within a circle uniformly : https://stackoverflow.com/questions/5837572/generate-a-random-point-within-a-circle-uniformly
+#Generate random point within a circle uniformly: https://stackoverflow.com/questions/5837572/generate-a-random-point-within-a-circle-uniformly
 rand_rad = circle_r * np.sqrt(np.random.rand(N))
 rand_angle = 2 * np.pi * np.random.rand(N)
 x = circle_x + rand_rad * np.cos(rand_angle)
