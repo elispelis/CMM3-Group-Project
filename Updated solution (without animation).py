@@ -8,6 +8,7 @@ Created on Tue Oct 19 14:36:05 2021
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 #Assign variable of file name to be read
 database_file = 'velocityCMM3.dat'
@@ -21,7 +22,7 @@ column_length = 4 #only 4 columns in velocity file
 #Details
 t_max = 0.5  # simulation time in seconds
 dt = 0.001  # step size
-N = 2 ** 16  # Number of particles
+N = 2 ** 8  # Number of particles
 D = 0.01  # diffusivity
 Nx = Ny = 64 #Euler grid size 
 
@@ -69,12 +70,15 @@ def get_velocities(x, y): #given a coordinate, tells us what nearest velocity ve
         y_velocities[i] = vel[velocity_index][1]
     return x_velocities, y_velocities 
 
-def plot_data(): #function to plot our data
+#def plot_data(): #function to plot our data
     avphi = getavrphimesh(x, y)
     plt.imshow(avphi, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #plot using imshow to display data as an image
     plt.title('insert title here') #title of plot
     plt.colorbar() #colour map legend
     plt.show() #plot
+
+fig = plt.figure()
+ims = []
 
 for i in np.arange(0, (t_max+dt), dt):
     v_x, v_y = get_velocities(x, y)
@@ -87,4 +91,14 @@ for i in np.arange(0, (t_max+dt), dt):
     y = np.where(y > y_max, 2 * y_max - y, y) 
     y = np.where(y < y_min, 2 * y_min - y, y)
     #plot the data
-    plot_data()
+    avphi = getavrphimesh(x, y)
+    im = plt.imshow(avphi, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #plot using imshow to display data as an image
+    ims.append([im])
+
+anim = animation.ArtistAnimation(fig, ims, interval=50, blit=True, repeat_delay=1)
+
+#anim.save("demo.gif")
+
+plt.title('insert title here') #title of plot
+plt.colorbar() #colour map legend
+plt.show()
