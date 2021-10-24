@@ -22,7 +22,7 @@ column_length = 4 #only 4 columns in velocity file
 #Details
 t_max = 0.5  # simulation time in seconds
 dt = 0.001  # step size
-N = 2 ** 12 # Number of particles
+N = 2 ** 16 # Number of particles
 D = 0.01  # diffusivity
 Nx = Ny = 64 #Euler grid size 
 
