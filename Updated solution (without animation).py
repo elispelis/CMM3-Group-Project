@@ -38,7 +38,7 @@ phi1 = np.ones(N)  # Array of ones for where function
 phi0 = np.zeros(N)  # Array of zeros for where function
 cmap = mpl.colors.LinearSegmentedColormap.from_list('custom_colormap', ['r', 'g', 'b'], 64)  # colormap for graphing
 
-PlotType = 0 #Plot either diffusive patch or non-zero velocity (choose 1 or 0)
+PlotType = 1 #Plot either diffusive patch or non-zero velocity (choose 1 or 0)
 
 if PlotType == 0:
     phi = np.where(np.sqrt(x ** 2 + y ** 2) < 0.3, phi1, phi0) #create circle for diffusive patch
