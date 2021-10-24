@@ -152,12 +152,16 @@ def animate(time, x_blue, y_blue, points_blue, x_red, y_red, points_red, fig):
             red_count = np.count_nonzero(y_red_indices)
             both_count = blue_count+red_count
             
+            if blue_count == 0 and red_count == 0: #If both counts are zero, give a neutral value.
+                grid[(j,z)] = 0
+                continue
+            
             if blue_count == 0:
-                grid[(j,z)] = 1
+                grid[(j,z)] = 1 #Red only
                 continue
             
             if red_count == 0:
-                grid[(j,z)] = -1
+                grid[(j,z)] = -1 #Blue only
                 continue
         
             grid[(j,z)] = (-1*blue_count+red_count)/both_count
@@ -167,7 +171,7 @@ def animate(time, x_blue, y_blue, points_blue, x_red, y_red, points_red, fig):
     
     return points_blue, points_red, conc_map
 
-anim = animation.FuncAnimation(fig, animate, fargs=(x_blue, y_blue, points_blue, x_red, y_red, points_red, fig), frames=101, repeat=False, interval=1)
+anim = animation.FuncAnimation(fig, animate, fargs=(x_blue, y_blue, points_blue, x_red, y_red, points_red, fig), frames=101, repeat=False, interval=10)
 divider = make_axes_locatable(ax2) #This makes the color bar not stick out of the plot
 cax = divider.append_axes('right', size='5%', pad=0.1) # This follows from the line above
 
@@ -175,5 +179,5 @@ cax = divider.append_axes('right', size='5%', pad=0.1) # This follows from the l
 ax1.title.set_text('Particles')
 ax2.title.set_text('Concentration Grid')
 
-plt.plot() 
-
+plt.plot()
+#anim.save('test.mp4')
