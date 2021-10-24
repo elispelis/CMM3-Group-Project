@@ -22,7 +22,7 @@ column_length = 4 #only 4 columns in velocity file
 #Details
 t_max = 0.5  # simulation time in seconds
 dt = 0.001  # step size
-N = 2 ** 8  # Number of particles
+N = 2 ** 12 # Number of particles
 D = 0.01  # diffusivity
 Nx = Ny = 64 #Euler grid size 
 
@@ -39,7 +39,7 @@ phi1 = np.ones(N)  # Array of ones for where function
 phi0 = np.zeros(N)  # Array of zeros for where function
 cmap = mpl.colors.LinearSegmentedColormap.from_list('custom_colormap', ['r', 'g', 'b'], 64)  # colormap for graphing
 
-PlotType = 1 #Plot either diffusive patch or non-zero velocity (choose 1 or 0)
+PlotType = 0 #Plot either diffusive patch or non-zero velocity (choose 1 or 0)
 
 if PlotType == 0:
     phi = np.where(np.sqrt(x ** 2 + y ** 2) < 0.3, phi1, phi0) #create circle for diffusive patch
@@ -69,13 +69,6 @@ def get_velocities(x, y): #given a coordinate, tells us what nearest velocity ve
         x_velocities[i] = vel[velocity_index][0]
         y_velocities[i] = vel[velocity_index][1]
     return x_velocities, y_velocities 
-
-#def plot_data(): #function to plot our data
-    avphi = getavrphimesh(x, y)
-    plt.imshow(avphi, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #plot using imshow to display data as an image
-    plt.title('insert title here') #title of plot
-    plt.colorbar() #colour map legend
-    plt.show() #plot
 
 fig = plt.figure()
 ims = []
