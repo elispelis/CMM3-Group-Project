@@ -37,8 +37,8 @@ y_max = 1
 #Blue particle initial postion
 circle_r=0.1 #circle radius
 #centre of circle coordinates
-circle_x = (x_min+x_max)/2
-circle_y = (y_min+y_max)/2
+circle_x = (x_min+x_max)/2+0.4
+circle_y = (y_min+y_max)/2+0.4
 
 #Generate random point within a circle uniformly: https://stackoverflow.com/questions/5837572/generate-a-random-point-within-a-circle-uniformly
 rand_rad = circle_r * np.sqrt(np.random.rand(N))
