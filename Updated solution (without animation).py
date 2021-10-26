@@ -24,7 +24,9 @@ t_max = 0.5  # simulation time in seconds
 dt = 0.001  # step size
 N = 2 ** 16 # Number of particles
 D = 0.01  # diffusivity
-Nx = Ny = 64 #Euler grid size 
+Nx = Ny = 64 #Euler grid size
+circle_x = 0.5 #circles centre x coordinate
+circle_y = 0.5 #circles centre y coordinate
 
 # Domain size
 x_min = -1
@@ -42,7 +44,7 @@ cmap = mpl.colors.LinearSegmentedColormap.from_list('custom_colormap', ['r', 'g'
 PlotType = 0 #Plot either diffusive patch or non-zero velocity (choose 1 or 0)
 
 if PlotType == 0:
-    phi = np.where(np.sqrt(x ** 2 + y ** 2) < 0.3, phi1, phi0) #create circle for diffusive patch
+    phi = np.where(np.sqrt((x+circle_x) ** 2 + (y-circle_y) ** 2) < 0.3, phi1, phi0) #create circle for diffusive patch
 
 if PlotType == 1:
     phi = np.where(x < 0, phi1, phi0) #create separation between above and below x-axis
@@ -88,7 +90,7 @@ for i in np.arange(0, (t_max+dt), dt):
     im = plt.imshow(avphi, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #plot using imshow to display data as an image
     ims.append([im])
 
-anim = animation.ArtistAnimation(fig, ims, interval=50, blit=True, repeat_delay=1)
+anim = animation.ArtistAnimation(fig, ims, interval=5, blit=True, repeat_delay=1)
 
 #anim.save("demo.gif")
 
