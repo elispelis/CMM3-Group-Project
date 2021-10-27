@@ -9,6 +9,9 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import time
+
+start_time = time.time()
 
 #Assign variable of file name to be read
 database_file = 'velocityCMM3.dat'
@@ -96,4 +99,6 @@ anim = animation.ArtistAnimation(fig, ims, interval=5, blit=True, repeat_delay=1
 
 plt.title('insert title here') #title of plot
 plt.colorbar() #colour map legend
+
+print("--- %s seconds ---" % (time.time() - start_time))
 plt.show()
