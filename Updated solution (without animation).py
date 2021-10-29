@@ -4,7 +4,6 @@ Created on Tue Oct 19 14:36:05 2021
 @author: dean
 """
 
-#Import relevant modules
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -42,7 +41,7 @@ y = np.random.uniform(y_min, y_max, size=N) #y-positions
 
 phi1 = np.ones(N)  # Array of ones for where function
 phi0 = np.zeros(N)  # Array of zeros for where function
-cmap = mpl.colors.LinearSegmentedColormap.from_list('custom_colormap', ['r', 'g', 'b'], 64)  # colormap for graphing
+cmap = mpl.colors.LinearSegmentedColormap.from_list('custom_colormap', ['r','darkblue', 'b'], 64)  # colormap for graphing
 
 PlotType = 0 #Plot either diffusive patch or non-zero velocity (choose 1 or 0)
 
@@ -51,8 +50,8 @@ if PlotType == 0:
 
 if PlotType == 1:
     phi = np.where(x < 0, phi1, phi0) #create separation between above and below x-axis
-
-
+   
+    
 # create a mesh and find the average phi values within it
 def getavrphimesh(x, y):
     x_gran = np.floor((x - np.amin(x)) / (np.amax(x) - np.amin(x)) * Nx).astype(int)
@@ -60,7 +59,9 @@ def getavrphimesh(x, y):
     grancoord = np.column_stack((x_gran, y_gran)) 
     unq, ids, count = np.unique(grancoord, return_inverse=True, return_counts=True, axis=0)
     avrphi = np.bincount(ids, phi)/count
+    avrphi = [0 if x < 0.3 else x for x in avrphi] #only plot the path of phi > 0.3
     avrphi = np.delete(avrphi, [0, 1])
+    
     avrphi = np.reshape(avrphi, [Nx, Ny])
     return avrphi
 
@@ -89,10 +90,12 @@ for i in np.arange(0, (t_max+dt), dt):
     y = np.where(y > y_max, 2 * y_max - y, y) 
     y = np.where(y < y_min, 2 * y_min - y, y)
     #plot the data
+   
     avphi = getavrphimesh(x, y)
+
     im = plt.imshow(avphi, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #plot using imshow to display data as an image
     ims.append([im])
-
+   
 anim = animation.ArtistAnimation(fig, ims, interval=5, blit=True, repeat_delay=1)
 
 #anim.save("demo.gif")
