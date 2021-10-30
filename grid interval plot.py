@@ -61,7 +61,7 @@ def getavrphimesh(x, y):
     unq, ids, count = np.unique(grancoord, return_inverse=True, return_counts=True, axis=0)
     avrphi = np.bincount(ids, phi)/count
     avrphi = np.delete(avrphi, [0, 1])
-    avrphi = np.reshape(avrphi, [Nx, Ny])
+    avrphi = np.rot90(np.reshape(avrphi, [Nx, Ny]))
     return avrphi
 
 def get_velocities(x, y): #given a coordinate, tells us what nearest velocity vector is
