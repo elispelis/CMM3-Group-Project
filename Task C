@@ -1,0 +1,15 @@
+import tkinter as tk
+from tkinter import filedialog, Text
+from PIL import ImageTk, Image
+import os
+
+root = tk.Tk()
+root.title("Simulator GUI")
+root.geometry("800x800")
+
+logo= tk.PhotoImage(file="Logo.png")
+
+text = tk.Label(root, text = "Input variables before running", image=logo, compound='top')
+text.pack()
+
+root.mainloop()
