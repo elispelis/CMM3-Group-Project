@@ -53,7 +53,7 @@ def getavrphimesh(x, y):
     grancoord = np.column_stack((x_gran, y_gran)) 
     unq, ids, count = np.unique(grancoord, return_inverse=True, return_counts=True, axis=0)
     avrphi = np.bincount(ids, phi)/count
-    avrphi = [0 if x < 0.3 else x for x in avrphi] #only plot the path of phi > 0.3
+    avrphi = [0 if x < 0.3 else 1 for x in avrphi] #only plot the path of phi > 0.3
     avrphi = np.delete(avrphi, [0, 1])
     
     avrphi = np.reshape(avrphi, [Nx, Ny])
