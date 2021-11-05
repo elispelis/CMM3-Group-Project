@@ -56,6 +56,8 @@ def getavrphimesh(x, y):
     avrphi = [0 if x < 0.3 else 1 for x in avrphi] #only plot data for phi > 0.3
     avrphi = np.delete(avrphi, [0, 1])
     avrphi = np.rot90(np.reshape(avrphi, [Nx, Ny]))
+    plt.plot(avrphi[:, 0], avrphi[:, 1])
+    plt.show()
     return avrphi
 
 def get_velocities(x, y): #given a coordinate, tells us what nearest velocity vector is
