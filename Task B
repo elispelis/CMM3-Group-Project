@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 #Details
 t_max = 0.2  # simulation time in seconds
 dt = 0.001  # step size
-N = 10  # Number of particles
+N = 64 # Number of particles
 D = 0.1  # diffusivity
 Nx = 64 #Euler grid size
 ones = np.ones(N)  # Array of ones for where function
@@ -19,13 +19,29 @@ x_max = 1
 ref = np.genfromtxt('reference_solution_1D.dat')
 x = np.random.uniform(x_min, x_max, size=N)  # initial x-positions
 phi = np.where(x <= 0, ones, zeros)
-x += np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N)
 
+print(np.around(x,decimals = 2))
+print(phi)
 
-x_gran = np.round((x - x_min) / (x_max - x_min) * (Nx - 1)).astype(int)
-print(x_gran)
-unq, ids, count = np.unique(x_gran, return_inverse=True, return_counts=True, axis=0)        
-print(unq, ids, count)
+for i in np.arange(0, t_max, dt):
+    x += np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N)
+
+print(np.around(x,decimals = 2))
+phi = np.where(x <= 0, ones, zeros)
+phi_splits = np.array_split(phi, Nx)
+
+print(phi_splits[0])
+
+x, phi = zip(*sorted(zip(x,phi)))
+
+plt.plot(ref[:, 0], ref[:, 1], color='g')
+plt.plot(x, phi, color='b')
+plt.show()
+
+# x_gran = np.round((x - x_min) / (x_max - x_min) * (Nx - 1)).astype(int)
+# print(x_gran)
+# unq, ids, count = np.unique(x_gran, return_inverse=True, return_counts=True, axis=0)        
+# print(unq, ids, count)
 
 
 # def getavrphimesh():
