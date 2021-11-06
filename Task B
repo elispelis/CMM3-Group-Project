@@ -1,10 +1,24 @@
+"""
+To do:
+
+- sest boudaries for x within x_min and x_max
+- different number of particles simulation
+- error shit
+- make plots pretty
+
+
+
+"""
+
+
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy.lib.function_base import average
 
 #Details
 t_max = 0.2  # simulation time in seconds
 dt = 0.001  # step size
-N = 64 # Number of particles
+N = 2**10 # Number of particles
 D = 0.1  # diffusivity
 Nx = 64 #Euler grid size
 ones = np.ones(N)  # Array of ones for where function
@@ -18,24 +32,30 @@ x_max = 1
 
 ref = np.genfromtxt('reference_solution_1D.dat')
 x = np.random.uniform(x_min, x_max, size=N)  # initial x-positions
-phi = np.where(x <= 0, ones, zeros)
+phi = np.where(x <= 0, ones, zeros) #give x coordinates phi values
 
-print(np.around(x,decimals = 2))
-print(phi)
+x, phi = zip(*sorted(zip(x,phi))) #sorts x into ascending order
+x_phi = np.column_stack((x,phi)) #stack x against phi
+
 
 for i in np.arange(0, t_max, dt):
-    x += np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N)
+    x_phi[:,0] += np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N) #diffusion calulation
+    
 
-print(np.around(x,decimals = 2))
-phi = np.where(x <= 0, ones, zeros)
-phi_splits = np.array_split(phi, Nx)
 
-print(phi_splits[0])
+x_phi = x_phi[x_phi[:,0].argsort()] #sort new x_phi into ascending
+ 
+phi_splits = np.split(x_phi[:,1], Nx) #split phi values so average can be taken
 
-x, phi = zip(*sorted(zip(x,phi)))
 
+avrphi = []
+for i in range(Nx):
+    average	= np.cumsum(phi_splits[i])[-1]/len(phi_splits[i]) #calculate averag at Nx points
+    avrphi.append(average)
+
+#plot
 plt.plot(ref[:, 0], ref[:, 1], color='g')
-plt.plot(x, phi, color='b')
+plt.plot(np.linspace(x_min,x_max, Nx), avrphi, marker='.', color='b')
 plt.show()
 
 # x_gran = np.round((x - x_min) / (x_max - x_min) * (Nx - 1)).astype(int)
