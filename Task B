@@ -57,24 +57,3 @@ for i in range(Nx):
 plt.plot(ref[:, 0], ref[:, 1], color='g')
 plt.plot(np.linspace(x_min,x_max, Nx), avrphi, marker='.', color='b')
 plt.show()
-
-# x_gran = np.round((x - x_min) / (x_max - x_min) * (Nx - 1)).astype(int)
-# print(x_gran)
-# unq, ids, count = np.unique(x_gran, return_inverse=True, return_counts=True, axis=0)        
-# print(unq, ids, count)
-
-
-# def getavrphimesh():
-#     x_gran = np.round((x - x_min) / (x_max - x_min) * (Nx - 1)).astype(int)  
-#     unq, ids, count = np.unique(x_gran, return_inverse=True, return_counts=True, axis=0)        
-#     avrphi = np.bincount(ids, phi) / count
-#     return avrphi
-
-# for i in np.arange(0, t_max, dt):
-#     #avphi = getavrphimesh()
-#     plt.plot(ref[:, 0], ref[:, 1], color='g')
-#     # plt.scatter(np.linspace(x_min, x_max, Nx), avphi[0], s=15, marker='.', color='b')
-#     # plt.plot(np.linspace(x_min, x_max, Nx), avphi[0], color='b')
-#     # plt.show()
-#     x += np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N)
-#     print(x)
