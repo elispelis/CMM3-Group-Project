@@ -1,47 +1,58 @@
+"""
+To do:
+
+- different number of particles simulation
+- error shit
+- make plots pretty
+
+
+
+"""
+
+
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy.lib.function_base import average
 
 #Details
 t_max = 0.2  # simulation time in seconds
 dt = 0.001  # step size
-N = 2 ** 15  # Number of particles
-D = 0.1  # diffusivity
+N = 2**15 # Number of particles
+N2 = N/(2**3)
+N3 = N2/(2**3)
+D = 0.1  # diffsivity
 Nx = 64 #Euler grid size
-Ny = 1
 ones = np.ones(N)  # Array of ones for where function
 zeros = np.zeros(N)  # Array of zeros for where function
-blue = np.full(N, 'b')  # Array of blue for where function
-red = np.full(N, 'r')  # Array of red for where function
 
 # Domain size
 x_min = -1
 x_max = 1
-y_min = -0.001
-y_max = 0.001
 
 ref = np.genfromtxt('reference_solution_1D.dat')
-pos = np.genfromtxt('velocityCMM3.dat', usecols=(0, 1))  # position array for velocity field
-vel = np.genfromtxt('velocityCMM3.dat', usecols=(2, 3))  # velocity array for velocity field
-x_posres = (np.max(pos[:, 0]) - np.min(pos[:, 0]))/(len(np.unique(pos[:, 0]).astype(int))-1)
-y_posres = (np.max(pos[:, 1]) - np.min(pos[:, 1]))/(len(np.unique(pos[:, 1]).astype(int))-1)
-maxdist = np.sqrt(x_posres ** 2 + y_posres ** 2)  # maximum allowable distance for a particle to be from a vel coord
 x = np.random.uniform(x_min, x_max, size=N)  # initial x-positions
-y = np.random.uniform(y_min, y_max, size=N)  # initial y-positions
-phi = np.where(x <= 0, ones, zeros)
+phi = np.where(x <= 0, ones, zeros) #give x coordinates phi values
 
-def getavrphimesh():
-        x_gran = np.round((x - x_min) / (x_max - x_min) * (Nx - 1)).astype(int)  
-        y_gran = np.round((y - y_min) / (y_max - y_min) * (Ny - 1)).astype(int)  
-        grancoord = np.column_stack((x_gran, y_gran))  
-        unq, ids, count = np.unique(grancoord, return_inverse=True, return_counts=True, axis=0)
-        avrphi = np.bincount(ids, phi) / count
-        avrphi = np.rot90(np.reshape(avrphi, [Nx, Ny]))
-        return avrphi
+
+x, phi = zip(*sorted(zip(x,phi))) #sorts x into ascending order
+x_phi = np.column_stack((x,phi)) #stack x against phi
+
 
 for i in np.arange(0, t_max, dt):
-    avphi = getavrphimesh()
-    plt.plot(ref[:, 0], ref[:, 1], color='g')
-    plt.scatter(np.linspace(x_min, x_max, Nx), avphi[0], s=15, marker='.', color='b')
-    plt.plot(np.linspace(x_min, x_max, Nx), avphi[0], color='b')
-    plt.show()
-    x += np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N)
+    x_phi[:,0] += np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N) #diffusion calulation
+    x_phi[:,0][x_phi[:,0] < x_min] = x_min  #any values in x thats under x_min replace to x_min
+    x_phi[:,0][x_phi[:,0] > x_max] = x_max #any values in x thats over x_max replace to x_max
+
+
+x_phi = x_phi[x_phi[:,0].argsort()] #sort new x_phi into ascending
+phi_splits = np.split(x_phi[:,1], Nx) #split phi values so average can be taken
+
+avrphi = []
+for i in range(Nx):
+    average	= np.cumsum(phi_splits[i])[-1]/len(phi_splits[i]) #calculate averag at Nx points
+    avrphi.append(average)
+
+#plot
+plt.plot(ref[:, 0], ref[:, 1], color='g')
+plt.plot(np.linspace(x_min,x_max, Nx), avrphi, marker='.', color='b')
+plt.show()
