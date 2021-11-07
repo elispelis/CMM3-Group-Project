@@ -1,0 +1,55 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+class TaskB:
+    def __init__(self, N):
+        #Details
+        self.t_max = 0.2  # simulation time in seconds
+        self.dt = 0.01  # step size
+        self.D = 0.1  # diffsivity
+        self.Nx = 64 #Euler grid size
+        self.N = N
+        # Domain size
+        self.x_min = -1
+        self.x_max = 1
+        self.initial_values()
+        self.sort_values()
+        self.loop()
+        self.compute()
+        self.loop2()
+    def initial_values(self):
+        self.ones = np.ones(self.N)  # Array of ones for where function
+        self.zeros = np.zeros(self.N)  # Array of zeros for where function
+        self.ref = np.genfromtxt('reference_solution_1D.dat')
+        self.x = np.random.uniform(self.x_min, self.x_max, size=self.N)  # initial x-positions
+        self.phi = np.where(self.x <= 0, self.ones, self.zeros) #give x coordinates phi values
+    def sort_values(self):
+        self.x, self.phi = zip(*sorted(zip(self.x,self.phi))) #sorts x into ascending order
+        self.x_phi = np.column_stack((self.x,self.phi)) #stack x against phi
+    def loop(self):
+        for i in np.arange(0, self.t_max, self.dt):
+            self.x_phi[:,0] += np.sqrt(2 * self.D * self.dt) * np.random.normal(0, 1, size=self.N) #diffusion calulation
+            self.x_phi[:,0][self.x_phi[:,0] < self.x_min] = self.x_min  #any values in x thats under x_min replace to x_min
+            self.x_phi[:,0][self.x_phi[:,0] > self.x_max] = self.x_max #any values in x thats over x_max replace to x_max
+    def compute(self): 
+        self.avrphi = np.array([])    
+        self.x_phi = self.x_phi[self.x_phi[:,0].argsort()] #sort new x_phi into ascending
+        self.phi_splits = np.split(self.x_phi[:,1], self.Nx) #split phi values so average can be taken
+    def loop2(self):
+        for i in range(self.Nx):
+            average	= np.cumsum(self.phi_splits[i])[-1]/len(self.phi_splits[i]) #calculate averag at Nx points
+            self.avrphi=np.append(self.avrphi, average)
+
+try1 = TaskB(2**15)
+
+def plot(ref, x_min, x_max, Nx, avrphis):
+    plt.plot(ref[:, 0], ref[:, 1], color='g') #Plot reference solution
+    x = np.linspace(x_min, x_max, Nx) #Define plot limits and x-grid quantity  
+    for i in avrphis:
+        plt.plot(x, i, marker='.', color='b') #Plot our values
+    plt.show() #Show the plot
+
+avrphis = []
+for i in [2**15, 2**12, 2**9, 2**6]:
+    avrphis.append(TaskB(i).avrphi)   
+plot(try1.ref, try1.x_min, try1.x_max, try1.Nx, avrphis)
