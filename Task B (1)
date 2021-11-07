@@ -1,0 +1,96 @@
+"""
+To do:
+
+- different number of particles simulation
+- error shit
+- make plots pretty
+
+
+
+"""
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from numpy.lib.function_base import average
+
+#Details
+t_max = 0.2  # simulation time in seconds
+dt = 0.001  # step size
+N = 2**15 # Number of particles
+N2 = 2**12
+N3 = 2**9
+D = 0.1  # diffsivity
+Nx = 64 #Euler grid size
+ones1 = np.ones(N)  # Array of ones for where function
+zeros1 = np.zeros(N)  # Array of zeros for where function
+ones2 = np.ones(N2)  # Array of ones for where function
+zeros2 = np.zeros(N2)  # Array of zeros for where function
+ones3 = np.ones(N3)  # Array of ones for where function
+zeros3 = np.zeros(N3)  # Array of zeros for where function
+
+# Domain size
+x_min = -1
+x_max = 1
+
+ref = np.genfromtxt('reference_solution_1D.dat')
+x1 = np.random.uniform(x_min, x_max, size=N)  # initial x-positions
+x2 = np.random.uniform(x_min, x_max, size=N2)  # initial x-positions
+x3 = np.random.uniform(x_min, x_max, size=N3)  # initial x-positions
+phi1 = np.where(x1 <= 0, ones1, zeros1) #give x coordinates phi values
+phi2 = np.where(x2 <= 0, ones2, zeros2) #give x coordinates phi values
+phi3 = np.where(x3 <= 0, ones3, zeros3) #give x coordinates phi values
+
+
+x1, phi1 = zip(*sorted(zip(x1,phi1))) #sorts x into ascending order
+x2, phi2 = zip(*sorted(zip(x2,phi2))) #sorts x into ascending order
+x3, phi3 = zip(*sorted(zip(x3,phi3))) #sorts x into ascending order
+x_phi1 = np.column_stack((x1,phi1)) #stack x against phi
+x_phi2 = np.column_stack((x2,phi2)) #stack x against phi
+x_phi3 = np.column_stack((x3,phi3)) #stack x against phi
+
+for i in np.arange(0, t_max, dt):
+    x_phi1[:,0] += np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N) #diffusion calulation
+    x_phi1[:,0][x_phi1[:,0] < x_min] = x_min  #any values in x thats under x_min replace to x_min
+    x_phi1[:,0][x_phi1[:,0] > x_max] = x_max #any values in x thats over x_max replace to x_max
+    
+    x_phi2[:,0] += np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N2) #diffusion calulation
+    x_phi2[:,0][x_phi2[:,0] < x_min] = x_min  #any values in x thats under x_min replace to x_min
+    x_phi2[:,0][x_phi2[:,0] > x_max] = x_max #any values in x thats over x_max replace to x_max
+    
+    x_phi3[:,0] += np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N3) #diffusion calulation
+    x_phi3[:,0][x_phi3[:,0] < x_min] = x_min  #any values in x thats under x_min replace to x_min
+    x_phi3[:,0][x_phi3[:,0] > x_max] = x_max #any values in x thats over x_max replace to x_max
+    
+avrphi1 = []    
+avrphi2 = []  
+avrphi3 = []
+
+x_phi1 = x_phi1[x_phi1[:,0].argsort()] #sort new x_phi into ascending
+phi_splits1 = np.split(x_phi1[:,1], Nx) #split phi values so average can be taken
+
+x_phi2 = x_phi2[x_phi2[:,0].argsort()] #sort new x_phi into ascending
+phi_splits2 = np.split(x_phi2[:,1], Nx) #split phi values so average can be taken
+
+x_phi3 = x_phi3[x_phi3[:,0].argsort()] #sort new x_phi into ascending
+phi_splits3 = np.split(x_phi3[:,1], Nx) #split phi values so average can be taken
+
+for i in range(Nx):
+    average1	= np.cumsum(phi_splits1[i])[-1]/len(phi_splits1[i]) #calculate averag at Nx points
+    avrphi1.append(average1)
+    
+for i in range(Nx):
+    average2	= np.cumsum(phi_splits2[i])[-1]/len(phi_splits2[i]) #calculate averag at Nx points
+    avrphi2.append(average2)
+
+for i in range(Nx):
+    average3	= np.cumsum(phi_splits3[i])[-1]/len(phi_splits3[i]) #calculate averag at Nx points
+    avrphi3.append(average3)
+
+
+#plot
+plt.plot(ref[:, 0], ref[:, 1], color='g')
+plt.plot(np.linspace(x_min,x_max, Nx), avrphi1, marker='.', color='b')
+plt.plot(np.linspace(x_min,x_max, Nx), avrphi2, marker='.', color='r')
+plt.plot(np.linspace(x_min,x_max, Nx), avrphi3, marker='.', color='y')
+plt.show()
