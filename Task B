@@ -1,7 +1,6 @@
 """
 To do:
 
-- sest boudaries for x within x_min and x_max
 - different number of particles simulation
 - error shit
 - make plots pretty
@@ -18,7 +17,9 @@ from numpy.lib.function_base import average
 #Details
 t_max = 0.2  # simulation time in seconds
 dt = 0.001  # step size
-N = 2**12 # Number of particles
+N = 2**15 # Number of particles
+N2 = N/(2**3)
+N3 = N2/(2**3)
 D = 0.1  # diffsivity
 Nx = 64 #Euler grid size
 ones = np.ones(N)  # Array of ones for where function
