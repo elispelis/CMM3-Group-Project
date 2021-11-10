@@ -1,9 +1,15 @@
+"""
+Created on Tue Oct 19 14:36:05 2021
+@author: dean, elis
+"""
+
+#Import relevant modules
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import time
 
-
+print("Loading...")
 start_time = time.time()
 
 #Assign variable of file name to be read
@@ -21,7 +27,7 @@ dt = 0.001  # step size
 N = 2 ** 17  # Number of particles
 D = 0.1  # diffusivity
 Nx = Ny = 64 #Euler grid size
-circle_x = 0.4 #circles centre x coordinate
+circle_x = -0.4 #circles centre x coordinate (times by -1 because its rotated by 90)
 circle_y = 0.4 #circles centre y coordinate
 
 # Domain size
@@ -33,11 +39,12 @@ y_max = 1
 x = np.random.uniform(x_min, x_max, size=N) #x-positions
 y = np.random.uniform(y_min, y_max, size=N) #y-positions
 
+marker = np.zeros((Nx,Ny)) #coordintes with all  0
 phi1 = np.ones(N)  # Array of ones for where function
 phi0 = np.zeros(N)  # Array of zeros for where function
-cmap = mpl.colors.LinearSegmentedColormap.from_list('custom_colormap', ['r', 'b'], 64)  # colormap for graphing
+cmap = mpl.colors.LinearSegmentedColormap.from_list('custom_colormap', ['r', 'g', 'b'], 64)  # colormap for graphing
 
-PlotType = 0 #Plot either diffusive patch or non-zero velocity (choose 1 or 0)
+PlotType = 1 #Plot either diffusive patch or non-zero velocity (choose 1 or 0)
 
 if PlotType == 0:
     phi = np.where(np.sqrt((x+circle_x) ** 2 + (y-circle_y) ** 2) < 0.3, phi1, phi0) #create circle for diffusive patch
@@ -53,11 +60,8 @@ def getavrphimesh(x, y):
     grancoord = np.column_stack((x_gran, y_gran)) 
     unq, ids, count = np.unique(grancoord, return_inverse=True, return_counts=True, axis=0)
     avrphi = np.bincount(ids, phi)/count
-    avrphi = [0 if x < 0.3 else 1 for x in avrphi] #only plot data for phi > 0.3
     avrphi = np.delete(avrphi, [0, 1])
     avrphi = np.rot90(np.reshape(avrphi, [Nx, Ny]))
-    plt.plot(avrphi[:, 0], avrphi[:, 1])
-    plt.show()
     return avrphi
 
 def get_velocities(x, y): #given a coordinate, tells us what nearest velocity vector is
@@ -71,10 +75,13 @@ def get_velocities(x, y): #given a coordinate, tells us what nearest velocity ve
         y_velocities[i] = vel[velocity_index][1]
     return x_velocities, y_velocities 
 
+
+
 def plot_data(): #function to plot our data
     avphi = getavrphimesh(x, y)
-    plt.imshow(avphi, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #plot using imshow to display data as an image
-    
+    affected = np.where(avphi>0.3,1,0)
+    print()
+    plt.imshow(marker, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #plot using imshow to display data as an image
 
 
 
@@ -89,12 +96,12 @@ for i in np.linspace(0, int(t_max/dt), int(t_max/dt)+1):
     y = np.where(y > y_max, 2 * y_max - y, y) 
     y = np.where(y < y_min, 2 * y_min - y, y)
     #plot the data
-    if i%50 == 0 and i != 0:
-        plt.subplot(2,5,int(i/50))
-        print(int(i/50))
+    if i%55 == 0:
+        plt.subplot(2,5,int(i/55)+1)
+        print(str(int(i/55)*10)+ "%")
         plot_data()
 
-
+#plt.colorbar()
 plt.suptitle('insert title here') #title of plot
 #plt.supcolorbar() #colour map legend
 print("--- %s seconds ---" % (time.time() - start_time))
