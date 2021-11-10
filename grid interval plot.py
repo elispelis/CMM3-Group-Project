@@ -10,7 +10,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import time
 
-
+print("Loading...")
 start_time = time.time()
 
 #Assign variable of file name to be read
@@ -28,7 +28,7 @@ dt = 0.001  # step size
 N = 2 ** 17  # Number of particles
 D = 0.1  # diffusivity
 Nx = Ny = 64 #Euler grid size
-circle_x = 0.4 #circles centre x coordinate
+circle_x = -0.4 #circles centre x coordinate
 circle_y = 0.4 #circles centre y coordinate
 
 # Domain size
@@ -80,8 +80,6 @@ def plot_data(): #function to plot our data
     plt.imshow(avphi, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #plot using imshow to display data as an image
     
 
-
-
 for i in np.linspace(0, int(t_max/dt), int(t_max/dt)+1):
     v_x, v_y = get_velocities(x, y)
     x += v_x * dt + np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N) #Lagrange Diffusion and advection
@@ -93,12 +91,13 @@ for i in np.linspace(0, int(t_max/dt), int(t_max/dt)+1):
     y = np.where(y > y_max, 2 * y_max - y, y) 
     y = np.where(y < y_min, 2 * y_min - y, y)
     #plot the data
-    if i%50 == 0 and i != 0:
-        plt.subplot(2,5,int(i/50))
-        print(int(i/50))
+    if i%55 == 0:
+        plt.subplot(2,5,int(i/55)+1)
+        print(str(int(i/55)*10)+ "%")
         plot_data()
 
-
+plt.subplots_adjust(right=0.8)
+plt.colorbar()
 plt.suptitle('insert title here') #title of plot
 #plt.supcolorbar() #colour map legend
 print("--- %s seconds ---" % (time.time() - start_time))
