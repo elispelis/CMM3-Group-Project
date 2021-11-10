@@ -75,14 +75,6 @@ def get_velocities(x, y): #given a coordinate, tells us what nearest velocity ve
         y_velocities[i] = vel[velocity_index][1]
     return x_velocities, y_velocities 
 
-
-
-#def plot_data(): #function to plot our data
-
-    
-
-
-
 for i in np.linspace(0, int(t_max/dt), int(t_max/dt)+1):
     v_x, v_y = get_velocities(x, y)
     x += v_x * dt + np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N) #Lagrange Diffusion and advection
@@ -94,18 +86,16 @@ for i in np.linspace(0, int(t_max/dt), int(t_max/dt)+1):
     y = np.where(y > y_max, 2 * y_max - y, y) 
     y = np.where(y < y_min, 2 * y_min - y, y)
 
-    avphi = getavrphimesh(x, y)
+    avphi = getavrphimesh(x, y) #get phi data
+    affected = np.where(avphi>0.3,1,0) #all points above 0.3 given value of 1
+    marker += affected #save affected values to marker array
     
-    affected = np.where(avphi>0.3,1,0)
-    marker += affected
     #plot the data
-
     if i%55 == 0:
         plt.subplot(2,5,int(i/55)+1)
         print(str(int(i/55)*10)+ "%")
-        marker = np.where(marker>=1,1,0)
+        marker = np.where(marker>=1,1,0) #turn all values equal or above 1 to 1
         plt.imshow(marker, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #plot using imshow to display data as an image
-
 
 #plt.colorbar()
 plt.suptitle('insert title here') #title of plot
