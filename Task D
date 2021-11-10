@@ -44,7 +44,7 @@ phi1 = np.ones(N)  # Array of ones for where function
 phi0 = np.zeros(N)  # Array of zeros for where function
 cmap = mpl.colors.LinearSegmentedColormap.from_list('custom_colormap', ['r', 'g', 'b'], 64)  # colormap for graphing
 
-PlotType = 1 #Plot either diffusive patch or non-zero velocity (choose 1 or 0)
+PlotType = 0 #Plot either diffusive patch or non-zero velocity (choose 1 or 0)
 
 if PlotType == 0:
     phi = np.where(np.sqrt((x+circle_x) ** 2 + (y-circle_y) ** 2) < 0.3, phi1, phi0) #create circle for diffusive patch
@@ -77,11 +77,9 @@ def get_velocities(x, y): #given a coordinate, tells us what nearest velocity ve
 
 
 
-def plot_data(): #function to plot our data
-    avphi = getavrphimesh(x, y)
-    affected = np.where(avphi>0.3,1,0)
-    print()
-    plt.imshow(marker, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #plot using imshow to display data as an image
+#def plot_data(): #function to plot our data
+
+    
 
 
 
@@ -95,11 +93,19 @@ for i in np.linspace(0, int(t_max/dt), int(t_max/dt)+1):
     x = np.where(x < x_min, 2 * x_min - x, x) 
     y = np.where(y > y_max, 2 * y_max - y, y) 
     y = np.where(y < y_min, 2 * y_min - y, y)
+
+    avphi = getavrphimesh(x, y)
+    
+    affected = np.where(avphi>0.3,1,0)
+    marker += affected
     #plot the data
+
     if i%55 == 0:
         plt.subplot(2,5,int(i/55)+1)
         print(str(int(i/55)*10)+ "%")
-        plot_data()
+        marker = np.where(marker>=1,1,0)
+        plt.imshow(marker, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #plot using imshow to display data as an image
+
 
 #plt.colorbar()
 plt.suptitle('insert title here') #title of plot
