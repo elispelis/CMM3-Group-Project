@@ -24,7 +24,7 @@ class TaskB:
     def square(self, list): # A function that squares each element in a list
         return [i ** 2 for i in list]
     
-    def __init__(self, N, h, avg_n):
+    def __init__(self, N, h, avg_n): #The constructor of the class TaskB
         #Details
         self.t_max = 0.2  # simulation time in seconds
         self.dt = h  # step size
@@ -36,34 +36,34 @@ class TaskB:
         self.x_min = -1
         self.x_max = 1
         self.initial_values()
-        for i in range(self.avg_n):
+        for i in range(self.avg_n): #For-loop to call our other functions in the class
             self.sort_values()
             self.loop()
             self.compute()
             self.loop2()
             
         
-    def initial_values(self):
+    def initial_values(self): #Function where we define our initial values and read the reference solution file
         self.ones = np.ones(self.N)  # Array of ones for where function
         self.zeros = np.zeros(self.N)  # Array of zeros for where function
-        self.ref = np.genfromtxt('reference_solution_1D.dat')
+        self.ref = np.genfromtxt('reference_solution_1D.dat') #Reads the reference solution file
         self.x = np.random.uniform(self.x_min, self.x_max, size=self.N)  # initial x-positions
         self.phi = np.where(self.x <= 0, self.ones, self.zeros) #give x coordinates phi values
-    def sort_values(self):
+    def sort_values(self): #Function to sort our x values and stack it against the phi values
         self.x, self.phi = zip(*sorted(zip(self.x,self.phi))) #sorts x into ascending order
         self.x_phi = np.column_stack((self.x,self.phi)) #stack x against phi
-    def loop(self):
+    def loop(self): #First funtion for-loop to calculate our Lagrangian diffusion
         for i in np.arange(0, self.t_max, self.dt):
             self.x_phi[:,0] += np.sqrt(2 * self.D * self.dt) * np.random.normal(0, 1, size=self.N) #diffusion calulation
             self.x_phi[:,0][self.x_phi[:,0] < self.x_min] = self.x_min  #any values in x thats under x_min replace to x_min
             self.x_phi[:,0][self.x_phi[:,0] > self.x_max] = self.x_max #any values in x thats over x_max replace to x_max
-    def compute(self): 
+    def compute(self): #Function to compute our average phi calues
         self.avrphi = np.array([])    
         self.x_phi = self.x_phi[self.x_phi[:,0].argsort()] #sort new x_phi into ascending
         self.phi_splits = np.split(self.x_phi[:,1], self.Nx) #split phi values so average can be taken
-    def loop2(self):
+    def loop2(self): #Second function for-loop to calculate the average phi at Nx points and append it to be plotted
         for i in range(self.Nx):
-            average	= np.cumsum(self.phi_splits[i])[-1]/len(self.phi_splits[i]) #calculate averag at Nx points
+            average	= np.cumsum(self.phi_splits[i])[-1]/len(self.phi_splits[i]) #calculate average phi at Nx points
             self.avrphi=np.append(self.avrphi, average)
         #SAMIR CHANGES
         self.x_val = np.linspace(self.x_min,self.x_max, self.Nx)
