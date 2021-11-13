@@ -13,9 +13,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-rmse_v = [] #Empty array to store rmse values that will be averaged
-avg_n = 5
-
+rmse_v = []
 
 class TaskB:
     
@@ -26,7 +24,7 @@ class TaskB:
     def square(self, list): # A function that squares each element in a list
         return [i ** 2 for i in list]
     
-    def __init__(self, N, h, avg_n):
+    def __init__(self, N, h, avg_n): #The constructor of the class TaskB
         #Details
         self.t_max = 0.2  # simulation time in seconds
         self.dt = h  # step size
@@ -37,36 +35,35 @@ class TaskB:
         # Domain size
         self.x_min = -1
         self.x_max = 1
-        
-        for i in range(self.avg_n): #Looping the process of getting values in order to process the error as an average
-            self.initial_values()    
+        self.initial_values()
+        for i in range(self.avg_n): #For-loop to call our other functions in the class
             self.sort_values()
             self.loop()
             self.compute()
             self.loop2()
             
         
-    def initial_values(self):
+    def initial_values(self): #Function where we define our initial values and read the reference solution file
         self.ones = np.ones(self.N)  # Array of ones for where function
         self.zeros = np.zeros(self.N)  # Array of zeros for where function
-        self.ref = np.genfromtxt('reference_solution_1D.dat')
+        self.ref = np.genfromtxt('reference_solution_1D.dat') #Reads the reference solution file
         self.x = np.random.uniform(self.x_min, self.x_max, size=self.N)  # initial x-positions
         self.phi = np.where(self.x <= 0, self.ones, self.zeros) #give x coordinates phi values
-    def sort_values(self):
+    def sort_values(self): #Function to sort our x values and stack it against the phi values
         self.x, self.phi = zip(*sorted(zip(self.x,self.phi))) #sorts x into ascending order
         self.x_phi = np.column_stack((self.x,self.phi)) #stack x against phi
-    def loop(self):
+    def loop(self): #First funtion for-loop to calculate our Lagrangian diffusion
         for i in np.arange(0, self.t_max, self.dt):
             self.x_phi[:,0] += np.sqrt(2 * self.D * self.dt) * np.random.normal(0, 1, size=self.N) #diffusion calulation
             self.x_phi[:,0][self.x_phi[:,0] < self.x_min] = self.x_min  #any values in x thats under x_min replace to x_min
             self.x_phi[:,0][self.x_phi[:,0] > self.x_max] = self.x_max #any values in x thats over x_max replace to x_max
-    def compute(self): 
+    def compute(self): #Function to compute our average phi calues
         self.avrphi = np.array([])    
         self.x_phi = self.x_phi[self.x_phi[:,0].argsort()] #sort new x_phi into ascending
         self.phi_splits = np.split(self.x_phi[:,1], self.Nx) #split phi values so average can be taken
-    def loop2(self):
+    def loop2(self): #Second function for-loop to calculate the average phi at Nx points and append it to be plotted
         for i in range(self.Nx):
-            average	= np.cumsum(self.phi_splits[i])[-1]/len(self.phi_splits[i]) #calculate averag at Nx points
+            average	= np.cumsum(self.phi_splits[i])[-1]/len(self.phi_splits[i]) #calculate average phi at Nx points
             self.avrphi=np.append(self.avrphi, average)
         #SAMIR CHANGES
         self.x_val = np.linspace(self.x_min,self.x_max, self.Nx)
@@ -133,17 +130,16 @@ def plot(ref, x_min, x_max, Nx, f_avrphis):
     plt.show() #Show the plot
 
 N_list = [2**18,2**15, 2**12]
-h = [0.01, 0.04, 0.05]
+h = [0.01]
 
 f_avrphis = []
 
 
-
-for i in h:
+for i in N_list:
    avrphis = []
    
-   for j in N_list:
-       avrphis.append(TaskB(j, i, avg_n).avrphi)
+   for j in h:
+       avrphis.append(TaskB(i, j, 5).avrphi)   
    f_avrphis.append(avrphis)    
     
 
@@ -151,21 +147,6 @@ for i in h:
 plot(np.genfromtxt('reference_solution_1D.dat'), -1, 1, 64, f_avrphis)
 print(rmse_v)
 
-rmse_avg = []
 
-h_array = [[] for _ in range(len(h))] #List that contains the list of average rmse values at each time step.
 
-avg_holder = [] #Holds average RMSE values temporarily for each iteration (at each time step)
-
-for z in range(0,len(h)):
-    for i in range(0, len(N_list)):
-        rmse_holder = [] #Holds RMSE values temporarily for each iteration
-        for j in range(0, avg_n):
-            counter = j + avg_n * i + z * avg_n * len(N_list)
-            rmse_holder.append(rmse_v[counter])
-        entry_average = sum(rmse_holder)/len(rmse_holder)
-        avg_holder.append(entry_average)
-        print(i)
-        print(rmse_holder, "Average at this number of particles: ",entry_average)
-
-print("Average RMSE values list: ",avg_holder)
+#print("For 2**18", tw[0])
