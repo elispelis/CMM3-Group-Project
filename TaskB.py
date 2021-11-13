@@ -13,7 +13,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-rmse_v = []
+rmse_v = [] #Empty array to store rmse values that will be averaged
+avg_n = 5
+
 
 class TaskB:
     
@@ -35,8 +37,9 @@ class TaskB:
         # Domain size
         self.x_min = -1
         self.x_max = 1
-        self.initial_values()
-        for i in range(self.avg_n):
+        
+        for i in range(self.avg_n): #Looping the process of getting values in order to process the error as an average
+            self.initial_values()    
             self.sort_values()
             self.loop()
             self.compute()
@@ -130,16 +133,17 @@ def plot(ref, x_min, x_max, Nx, f_avrphis):
     plt.show() #Show the plot
 
 N_list = [2**18,2**15, 2**12]
-h = [0.01]
+h = [0.01, 0.04, 0.05]
 
 f_avrphis = []
 
 
-for i in N_list:
+
+for i in h:
    avrphis = []
    
-   for j in h:
-       avrphis.append(TaskB(i, j, 5).avrphi)   
+   for j in N_list:
+       avrphis.append(TaskB(j, i, avg_n).avrphi)
    f_avrphis.append(avrphis)    
     
 
@@ -147,6 +151,21 @@ for i in N_list:
 plot(np.genfromtxt('reference_solution_1D.dat'), -1, 1, 64, f_avrphis)
 print(rmse_v)
 
+rmse_avg = []
 
+h_array = [[] for _ in range(len(h))] #List that contains the list of average rmse values at each time step.
 
-#print("For 2**18", tw[0])
+avg_holder = [] #Holds average RMSE values temporarily for each iteration (at each time step)
+
+for z in range(0,len(h)):
+    for i in range(0, len(N_list)):
+        rmse_holder = [] #Holds RMSE values temporarily for each iteration
+        for j in range(0, avg_n):
+            counter = j + avg_n * i + z * avg_n * len(N_list)
+            rmse_holder.append(rmse_v[counter])
+        entry_average = sum(rmse_holder)/len(rmse_holder)
+        avg_holder.append(entry_average)
+        print(i)
+        print(rmse_holder, "Average at this number of particles: ",entry_average)
+
+print("Average RMSE values list: ",avg_holder)
