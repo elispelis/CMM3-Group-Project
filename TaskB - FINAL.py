@@ -4,18 +4,22 @@ Created on Mon Nov  8 11:42:04 2021
 
 @author: Samir Elsheikh
 
-
-Q1: Do we average the rmse values across many runs? If so, how many runs?
-Q2: How many time steps to consider? 
 """
 
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit #Used to fit the errors to a curve
 
-rmse_v = [] #Empty array to store rmse values that will be averaged
-avg_n = 20 #Number of runs to average over
+#Inputs
+avg_n = 10 #Number of runs to average over
+N_list = [2**12, 2**10, 2**15, 2**14]
+N_list.sort(reverse = True) #Sort from highest to lowest.
 
+h = [0.005, 0.01, 0.05]
+h.sort() #Sort from lowest to highest
+# End of Inputs
+
+rmse_v = [] #Empty array to store rmse values that will be averaged
 
 class TaskB:
     
@@ -68,7 +72,6 @@ class TaskB:
         for i in range(self.Nx):
             average	= np.cumsum(self.phi_splits[i])[-1]/len(self.phi_splits[i]) #calculate averag at Nx points
             self.avrphi=np.append(self.avrphi, average)
-        #SAMIR CHANGES
         self.x_val = np.linspace(self.x_min,self.x_max, self.Nx)
         self.ref_x_ind = []
         self.ref_y =[]
@@ -115,12 +118,6 @@ def plot(ref, x_min, x_max, Nx, f_avrphis):
     plt.legend()
     plt.show() #Show the plot
 
-N_list = [2**12, 2**15, 2**10, 2**11, 2**13, 2**14]
-N_list.sort(reverse = True) #Sort from highest to lowest.
-
-h = [0.05, 0.001]
-h.sort() #Sort from lowest to highest
-
 f_avrphis = []
 
 
@@ -154,9 +151,23 @@ for z in range(0,len(h)):
 print()
 print("Average RMSE values list: ",avg_holder)
 
+
+
+
+
+
+# PLOTTING ERROR VS NUMBER OF PARTICLES FOR CONSTANT STEP SIZE (*smallest step size is ALWAYS used)# 
+
+
+
+
+
+
+
+
+
+
 pl_rmse = [] #Array for rmse values that will be plotted
-
-
 
 
 for i in range(len(N_list)):
@@ -186,3 +197,60 @@ plt.plot(N_list,pl_rmse, marker='.', label = 'Averaged RMSE over %.0f runs' %avg
 plt.plot(N_list,fit_RMSE, label = 'Fitted RMSE', linestyle='dashed') #Plotting fitted RMSE
 plt.title('RMSE vs Number of Particles at t = 0.2 for dT = %f' %h[0])
 plt.legend(loc = 'lower left')
+
+
+
+
+
+
+
+
+"""
+This part was an attempt to plot the relationship between step size and error, but no such relationship was found.
+
+
+# PLOTTING ERROR VS. STEP SIZE FOR CONSTANT NUMBER OF PARTICLES (*largest number of particles is ALWAYS used)# 
+
+
+
+
+
+
+
+
+
+
+
+
+
+pl2_rmse = [] #Array for rmse values that will be plotted (This is for the second error plot which is RMSE vs. Step-Size)
+
+
+for i in range(len(h)):
+    pl2_rmse.append(avg_holder[i * len(N_list)])
+
+print(pl2_rmse)
+print(h)
+
+params = curve_fit(fit_func, h, pl2_rmse) # Adapted from https://stackoverflow.com/questions/19165259/python-numpy-scipy-curve-fitting
+[a, b] = params[0]
+
+fit_RMSE_2 = []
+
+for i in h: #Getting values for the fitted RMSE solution at the same number of particles
+    fit_RMSE_int_2 = fit_func(i, a, b)
+    fit_RMSE_2.append(fit_RMSE_int_2) 
+
+
+
+fig, ax = plt.subplots(1)
+ax.set_xscale('log')
+ax.set_yscale('log')
+plt.xlabel('Step Size')
+plt.ylabel('RMSE')
+plt.text(.04,.94,'RMSE = %.3f*N^(%.3f)' %(a, b), bbox={'facecolor':'w','pad':5}, ha="left", va="top", transform=plt.gca().transAxes )
+plt.plot(h,pl2_rmse, marker='.', label = 'Averaged RMSE over %.0f runs' %avg_n) #Plotting calculated RMSE
+plt.plot(h,fit_RMSE_2, label = 'Fitted RMSE', linestyle='dashed') #Plotting fitted RMSE
+plt.title('RMSE vs Step Size at t = 0.2 for N = %.0f particles' %N_list[0])
+plt.legend(loc = 'lower left')
+"""
