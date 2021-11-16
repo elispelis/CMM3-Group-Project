@@ -86,8 +86,8 @@ def plot_data(): #Function to plot our data
     plt.title('t= '+str(i/1000)+'s') #Shows the time where the subplot was plotted
     plt.imshow(avphi, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #Plot using imshow to display data as an image
 
-fig, axs = plt.subplots(2,5, sharex = True, sharey = True)
-axs = axs.ravel()   
+fig = plt.figure()
+axes = []
 
 for i in np.linspace(0, int(t_max/dt), int(t_max/dt)+1):
     v_x, v_y = get_velocities(x, y)
@@ -102,14 +102,16 @@ for i in np.linspace(0, int(t_max/dt), int(t_max/dt)+1):
     if i%55 == 0:
         print(str(int(i/55)*10)+ "%") #Prints loading percentage
         avphi = getavrphimesh(x, y) #Assigns our avphi values to plot
-        axs[int(i/55)].imshow(avphi, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #Plot using imshow to display data as an image
-        #axs[int(i/55)].title('t= '+str(i/1000)+'s') #Shows the time where the subplot was plotted
+        axes.append(fig.add_subplot(2,5,int(i/55)+1))
+        im = plt.imshow(avphi, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #Plot using imshow to display data as an image
+        axes[-1].set_title('t= '+str(i/1000)+'s') #Shows the time where the subplot was plotted
 
-#plt.subplots_adjust(right=0.8)
-axs.plot()
-#plt.clim(0, 1) #Colourbar limits
+plt.subplots_adjust(right=0.8)
+plt.clim(0, 1) #Colourbar limits
+cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+cbar = fig.colorbar(im, cax=cbar_ax)
 #cbar = plt.colorbar() #Plot colourbar
-#cbar.set_label('Concentration (ϕ)') #Gives colourbar a title
+cbar.set_label('Concentration (ϕ)') #Gives colourbar a title
 plt.suptitle('Task A: Advection & Diffusion') #Title of plot
 print("--- %s seconds ---" % (time.time() - start_time)) #Shows code running time
 plt.show() #Show plot
