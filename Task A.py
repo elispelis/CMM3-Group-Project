@@ -79,14 +79,7 @@ def get_velocities(x, y):
         y_velocities[i] = vel[velocity_index][1]
     return x_velocities, y_velocities 
 
-# def plot_data(): #Function to plot our data
-#     plt.subplot(2,5,int(i/55)+1) #Gives 10 subplots
-#     print(str(int(i/55)*10)+ "%") #Prints loading percentage
-#     avphi = getavrphimesh(x, y) #Assigns our avphi values to plot
-#     plt.title('t= '+str(i/1000)+'s') #Shows the time where the subplot was plotted
-#     plt.imshow(avphi, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #Plot using imshow to display data as an image
-
-fig = plt.figure()
+fig = plt.figure() #initialise plot
 axes = []
 
 for i in np.linspace(0, int(t_max/dt), int(t_max/dt)+1):
@@ -107,10 +100,10 @@ for i in np.linspace(0, int(t_max/dt), int(t_max/dt)+1):
         axes[-1].set_title('t= '+str(i/1000)+'s') #Shows the time where the subplot was plotted
 
 fig.tight_layout()
-plt.subplots_adjust(right=0.8)
+plt.subplots_adjust(right=0.8) #adjust for global colorbar
 plt.clim(0, 1) #Colourbar limits
 cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
-cbar = fig.colorbar(im, cax=cbar_ax)
+cbar = fig.colorbar(im, cax=cbar_ax) #plot colorbar
 cbar.set_label('Concentration (ϕ)') #Gives colourbar a title
 plt.suptitle('Task A: Advection & Diffusion') #Title of plot
 print("--- %s seconds ---" % (time.time() - start_time)) #Shows code running time
