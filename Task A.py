@@ -79,12 +79,12 @@ def get_velocities(x, y):
         y_velocities[i] = vel[velocity_index][1]
     return x_velocities, y_velocities 
 
-def plot_data(): #Function to plot our data
-    plt.subplot(2,5,int(i/55)+1) #Gives 10 subplots
-    print(str(int(i/55)*10)+ "%") #Prints loading percentage
-    avphi = getavrphimesh(x, y) #Assigns our avphi values to plot
-    plt.title('t= '+str(i/1000)+'s') #Shows the time where the subplot was plotted
-    plt.imshow(avphi, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #Plot using imshow to display data as an image
+# def plot_data(): #Function to plot our data
+#     plt.subplot(2,5,int(i/55)+1) #Gives 10 subplots
+#     print(str(int(i/55)*10)+ "%") #Prints loading percentage
+#     avphi = getavrphimesh(x, y) #Assigns our avphi values to plot
+#     plt.title('t= '+str(i/1000)+'s') #Shows the time where the subplot was plotted
+#     plt.imshow(avphi, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #Plot using imshow to display data as an image
 
 fig = plt.figure()
 axes = []
