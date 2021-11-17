@@ -97,13 +97,9 @@ for i in np.linspace(0, int(t_max/dt), int(t_max/dt)+1):
     
     #plot the data
     if i%55 == 0:
-        #plt.subplot(2,5,int(i/55)+1)
-        #print(str(int(i/55)*10)+ "%")
         marker = np.where(marker>=1,1,0) #turn all values equal or above 1 to 1
-        #plt.imshow(marker, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #plot using imshow to display data as an image
-
         print(str(int(i/55)*10)+ "%") #Prints loading percentage
-        axes.append(fig.add_subplot(2,5,int(i/55)+1))
+        axes.append(fig.add_subplot(2,5,int(i/55)+1)) #add subplot
         im = plt.imshow(marker, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #Plot using imshow to display data as an image
         axes[-1].set_title('t= '+str(i/1000)+'s') #Shows the time where the subplot was plotted
 
