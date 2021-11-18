@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Nov  8 11:42:04 2021
+Created on Wed Nov 17 18:34:54 2021
 
 @author: Samir Elsheikh
-
 """
 
 import numpy as np #Used to manipulate arrays and perform matrix operations
@@ -15,7 +14,7 @@ avg_n = 5 #Number of runs to average over
 N_list = [2**12, 2**10, 2**15, 2**14] #List of number of particles for which to run the simulation
 N_list.sort(reverse = True) #Sort from highest to lowest.
 
-h = [0.05, 0.01] #List of time steps for which to run the simulation
+h = [0.05, 0.01, 0.02] #List of time steps for which to run the simulation
 h.sort() #Sort from lowest to highest
 
 D = 0.1
@@ -164,6 +163,8 @@ for z in range(0,len(h)): #Repeats for all time steps
 def fit_func(N, a, b): #Function to be fitted to
     return a*N**b
 
+fig, ax = plt.subplots(1) #Open a new figure for the Error vs Number of Particles plot
+
 for j in range(len(h)):
     pl_rmse = [] #Array for rmse values that will be plotted
     for i in range(len(N_list)):
@@ -178,15 +179,13 @@ for j in range(len(h)):
         fit_RMSE_int = fit_func(z, a, b) 
         fit_RMSE.append(fit_RMSE_int) 
 
-    fig, ax = plt.subplots(1) #Open a new figure for the Error vs Number of Particles plot
     ax.set_xscale('log') #Set the x-axis to a logarithmic scale
     ax.set_yscale('log') #Set the y-axis to a logarithmic scale 
     plt.xlabel('Number of Particles')
     plt.ylabel('RMSE')
-    plt.text(.96,.94,'RMSE = %.3f*N^(%.3f)' %(a, b), bbox={'facecolor':'w','pad':5}, ha="right", va="top", transform=plt.gca().transAxes ) #Printing the fitted function on the plot with correct formatting
-    plt.plot(N_list,pl_rmse, marker='.', label = 'Averaged RMSE over %.0f runs' %avg_n) #Plotting calculated RMSE
-    plt.plot(N_list,fit_RMSE, label = 'Fitted RMSE', linestyle='dashed') #Plotting fitted RMSE
-    plt.title('RMSE vs Number of Particles at t = 0.2 for dT = %f' %h[j])
+    plt.plot(N_list,pl_rmse, marker='.', label='Averaged RMSE over %0.d runs for %f step size' %(avg_n, h[j])) #Plotting calculated RMSE
+    plt.plot(N_list,fit_RMSE, label = '"Fitted RMSE for %f stepsize" = %.3f*N^(%.3f)' %(h[j],a, b), linestyle='dashed') #Plotting fitted RMSE
+    plt.title('RMSE vs Number of Particles at t = 0.2')
     plt.legend(loc = 'lower left') #Add a legend
 
 
