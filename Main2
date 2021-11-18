@@ -1,0 +1,262 @@
+#Import relevant packages and modules
+import time
+from tkinter import *
+import matplotlib as mpl
+import matplotlib.pyplot as plt  # Used to plot the relevant plots
+import numpy as np  # Used to manipulate arrays and perform matrix operations
+from scipy.optimize import curve_fit #Used to fit the errors to a curve
+
+root = Tk()
+root.title("Diffusion & Advection Interface")
+
+# Creating variables
+DD = StringVar()  # float variable
+dtt = StringVar()  # float variable
+Nxx = StringVar()  # integer variable
+Nyy = StringVar()  # integer variable
+NN = StringVar()  # integer variable
+x_minn = StringVar()  # integer variable
+x_maxx = StringVar()  # integer variable
+y_minn = StringVar()  # integer variable
+y_maxx = StringVar()  # integer variable
+t_maxx = StringVar()  # float variable
+avg_nn = StringVar()  # integer variable
+
+# Creating window to input the variables
+label1 = Label(root, text="Please input the desired parameters here if running 2D problems or Chemical Spill").grid(row=1, column=0)
+
+label2 = Label(root, text="Diffusivity:").grid(row=2, column=0)
+Entry(root, textvariable=DD).grid(row=2, column=1)
+Entry(root, textvariable=DD).insert(0, "0.1")
+
+label3 = Label(root, text="Simulation time:").grid(row=3, column=0)
+Entry(root, textvariable=t_maxx).grid(row=3, column=1)
+Entry(root, textvariable=t_maxx).insert(0, "0.5")
+
+label4 = Label(root, text="Nx:").grid(row=4, column=0)
+Entry(root, textvariable=Nxx).grid(row=4, column=1)
+Entry(root, textvariable=Nxx).insert(0, "64")
+
+label5 = Label(root, text="Ny:").grid(row=5, column=0)
+Entry(root, textvariable=Nyy).grid(row=5, column=1)
+Entry(root, textvariable=Nyy).insert(1, "64")
+
+label6 = Label(root, text="x_min:").grid(row=6, column=0)
+Entry(root, textvariable=x_minn).grid(row=6, column=1)
+Entry(root, textvariable=x_minn).insert(0, "-1")
+
+label7 = Label(root, text="x_max:").grid(row=7, column=0)
+Entry(root, textvariable=x_maxx).grid(row=7, column=1)
+Entry(root, textvariable=x_maxx).insert(0, "1")
+
+label8 = Label(root, text="y_min:").grid(row=8, column=0)
+Entry(root, textvariable=y_minn).grid(row=8, column=1)
+Entry(root, textvariable=y_minn).insert(0, "-1")
+
+label9 = Label(root, text="y_max:").grid(row=9, column=0)
+Entry(root, textvariable=y_maxx).grid(row=9, column=1)
+Entry(root, textvariable=y_maxx).insert(0, "1")
+
+label10 = Label(root, text=" ").grid(row=10, column=0)
+
+label11 = Label(root, text="Please input the desired parameters here if running 1D problem:").grid(row=11, column=0)
+
+label12 = Label(root, text="Number of simulations:").grid(row=12, column=0)
+Entry(root, textvariable=avg_nn).grid(row=12, column=1)
+Entry(root, textvariable=avg_nn).insert(0, "1")
+
+label13 = Label(root, text=" ").grid(row=13, column=0)
+
+label14 = Label(root, text="Please input parameters here when running any problem").grid(row=14, column=0)
+
+label15 = Label(root, text="Timestep h:").grid(row=15, column=0)
+Entry(root, textvariable=dtt).grid(row=15, column=1)
+Entry(root, textvariable=dtt).insert(0, "0.001")
+
+label16 = Label(root, text="Number of Particles (Value entered will be to the power of 2):").grid(row=16, column=0)
+Entry(root, textvariable=NN).grid(row=16, column=1)
+Entry(root, textvariable=NN).insert(0, "17")
+
+label13 = Label(root, text=" ").grid(row=17, column=0)
+
+label17 = Label(root, text="Choose problem type").grid(row=18, column=0)
+ic_options = StringVar(root)
+ic_options.set("Click here to choose type")
+ic = OptionMenu(root, ic_options, "For 2D Problem (Diffusive patch)",
+                "For 2D Problem (Non-zero velocity)", "For Chemical Spill Problem",
+                "For 1D Problem").grid(row=18, column=1)
+
+Confirm = Button(root, text="Confirm inputs", fg="black", command=root.destroy).grid(row=19, column=1)
+root.mainloop()
+
+# Takes in variables from inputs in the GUI
+D = float(DD.get())
+x_min = float(x_minn.get())
+x_max = float(x_maxx.get())
+y_min = float(y_minn.get())
+y_max = float(y_maxx.get())
+t_max = float(t_maxx.get())
+dt = float(dtt.get())
+Nx = int(Nxx.get())
+Ny = int(Nyy.get())
+N = 2 ** int(NN.get())
+avg_n = int(avg_nn.get())
+
+
+# create a mesh and find the average phi values within it
+def getavrphimesh(x, y):
+    x_gran = np.floor((x - np.amin(x)) / (np.amax(x) - np.amin(x)) * Nx).astype(int)
+    y_gran = np.floor((y - np.amin(y)) / (np.amax(y) - np.amin(y)) * Ny).astype(int)
+    grancoord = np.column_stack((x_gran, y_gran))
+    unq, ids, count = np.unique(grancoord, return_inverse=True, return_counts=True, axis=0)
+    avrphi = np.bincount(ids, phi) / count
+    avrphi = np.delete(avrphi, [0, 1])
+    avrphi = np.rot90(np.reshape(avrphi, [Nx, Ny]))
+    return avrphi
+
+
+# given a coordinate, tells us what nearest velocity vector is
+def get_velocities(x, y):
+    x_coordinates = np.floor((x - np.amin(x)) / (np.amax(x) - np.amin(x)) * (row_length - 1)).astype(
+        int)  # same indexing
+    y_coordinates = np.floor((y - np.amin(y)) / (np.amax(y) - np.amin(y)) * (row_length - 1)).astype(
+        int)  # as avrphi function
+    # empty arrays to receive velocity data
+    x_velocities = np.empty(shape=N)
+    y_velocities = np.empty(shape=N)
+    for i in range(N):  # turns our two vel arrays into a 1D array
+        velocity_index = y_coordinates[i] + x_coordinates[i] * row_length
+        x_velocities[i] = vel[velocity_index][0]
+        y_velocities[i] = vel[velocity_index][1]
+    return x_velocities, y_velocities
+
+# If condition to run Task A
+if ic_options.get() == "For 2D Problem (Diffusive patch)" or ic_options.get() == "For 2D Problem (Non-zero velocity)":
+    print("Loading 2D Problem...")  # Print loading screen to let user know the code is still loading
+    start_time = time.time()  # Start time to count how long program runs
+
+    # Assign variable of file name to be read
+    database_file = 'velocityCMM3.dat'
+    # Read data from file and process the data from it by rearranging the array
+    pos = np.genfromtxt(database_file, usecols=(0, 1))  # position array
+    vel = np.genfromtxt(database_file, usecols=(2, 3))  # velocity array
+    row_length = np.sqrt(len(pos)).astype(int)
+    column_length = 4  # only 4 columns in velocity file
+
+    x = np.random.uniform(x_min, x_max, size=N)  # x-positions
+    y = np.random.uniform(y_min, y_max, size=N)  # y-positions
+
+    circle_x = 0  # circles centre x coordinate
+    circle_y = 0  # circles centre y coordinate
+
+    phi1 = np.ones(N)  # Array of ones for np.where function for plot type
+    phi0 = np.zeros(N)  # Array of zeros for np.where function for plot type
+    cmap = mpl.colors.LinearSegmentedColormap.from_list('custom_colormap', ['r', 'lime', 'b'],
+                                                        64)  # colormap for graphing
+
+    if ic_options.get() == "For 2D Problem (Diffusive patch)":
+        phi = np.where(np.sqrt((x + circle_x) ** 2 + (y - circle_y) ** 2) < 0.3, phi1,
+                       phi0)  # create circle for diffusive patch
+    else:
+        phi = np.where(x < 0, phi1, phi0)  # create separation between above and below x-axis
+
+    fig = plt.figure()
+    axes = []
+
+    for i in np.linspace(0, int(t_max / dt), int(t_max / dt) + 1):
+        v_x, v_y = get_velocities(x, y)
+        x += v_x * dt + np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N)  # Lagrange Diffusion and advection
+        y += v_y * dt + np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N)  # Lagrange Diffusion and advection
+        # Bounce particles off boundary walls: if coord is beyond boundary, make it be as much as it exceeded boundary
+        x = np.where(x > x_max, 2 * x_max - x, x)
+        x = np.where(x < x_min, 2 * x_min - x, x)
+        y = np.where(y > y_max, 2 * y_max - y, y)
+        y = np.where(y < y_min, 2 * y_min - y, y)
+        # Plot the data
+        if i % 55 == 0:
+            print(str(int(i / 55) * 10) + "%")  # Prints loading percentage
+            avphi = getavrphimesh(x, y)  # Assigns our avphi values to plot
+            axes.append(fig.add_subplot(2, 5, int(i / 55) + 1))
+            im = plt.imshow(avphi, cmap=cmap, 
+                            extent=(x_min, x_max, y_min, y_max))  # Plot using imshow to display data as an image
+            axes[-1].set_title('t= ' + str(i / 1000) + 's')  # Shows the time where the subplot was plotted
+
+    fig.tight_layout()
+    plt.subplots_adjust(right=0.8)
+    plt.clim(0, 1)  # Colourbar limits
+    cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+    cbar = fig.colorbar(im, cax=cbar_ax)
+    cbar.set_label('Concentration (ϕ)')  # Gives colourbar a title
+    plt.suptitle('Task A: Advection & Diffusion')  # Title of plot
+    print("--- %s seconds ---" % (time.time() - start_time))  # Shows code running time
+    plt.show()  # Show plot
+
+
+#Elif condition to run task D
+elif ic_options.get() == "For Chemical Spill Problem":
+    print("Loading Chemical Spill...")  # Print loading screen to let user know the code is still loading
+    start_time = time.time()  # Start time to count how long program runs
+    
+    # Assign variable of file name to be read
+    database_file = 'velocityCMM3.dat'
+    # Read data from file and process the data from it by rearranging the array
+    pos = np.genfromtxt(database_file, usecols=(0, 1))  # position array
+    vel = np.genfromtxt(database_file, usecols=(2, 3))  # velocity array
+    row_length = np.sqrt(len(pos)).astype(int)
+    column_length = 4  # only 4 columns in velocity file
+    
+    x = np.random.uniform(x_min, x_max, size=N)  # x-positions
+    y = np.random.uniform(y_min, y_max, size=N)  # y-positions
+
+    circle_x = -0.4  # circles centre x coordinate
+    circle_y = 0.4  # circles centre y coordinate
+    
+    marker = np.zeros((Nx,Ny)) #coordintes with all  0
+    phi1 = np.ones(N)  # Array of ones for where function
+    phi0 = np.zeros(N)  # Array of zeros for where function
+    cmap = mpl.colors.ListedColormap(["red", "blue"])  # colormap for graphing
+    bounds = [0,0.3,1] #ticks for colorbar
+    norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
+    
+    phi = np.where(np.sqrt((x + circle_x) ** 2 + (y - circle_y) ** 2) < 0.1, phi1,
+                   phi0)  # create circle for diffusive patch
+        
+    fig = plt.figure() #initialise plot
+    axes = []
+    
+    for i in np.linspace(0, int(t_max/dt), int(t_max/dt)+1):
+        v_x, v_y = get_velocities(x, y)
+        x += v_x * dt + np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N) #Lagrange Diffusion and advection
+        y += v_y * dt + np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N) #Lagrange Diffusion and advection
+        #Bounce particles off boundary walls: if coord is beyond boundary, set it 
+        #to be as much as it exceeded boundary (bounce)
+        x = np.where(x > x_max, 2 * x_max - x, x)
+        x = np.where(x < x_min, 2 * x_min - x, x) 
+        y = np.where(y > y_max, 2 * y_max - y, y) 
+        y = np.where(y < y_min, 2 * y_min - y, y)
+
+        avphi = getavrphimesh(x, y) #get phi data
+        affected = np.where(avphi>0.3,1,0) #all points above 0.3 given value of 1
+        marker += affected #save affected values to marker array
+    
+        #plot the data
+        if i%55 == 0:
+            marker = np.where(marker>=1,1,0) #turn all values equal or above 1 to 1
+            print(str(int(i/55)*10)+ "%") #Prints loading percentage
+            axes.append(fig.add_subplot(2,5,int(i/55)+1)) #add subplot
+            im = plt.imshow(marker, cmap=cmap, 
+                            extent=(x_min, x_max, y_min, y_max)) #Plot using imshow to display data as an image
+            axes[-1].set_title('t= '+str(i/1000)+'s') #Shows the time where the subplot was plotted
+
+    fig.tight_layout()
+    plt.subplots_adjust(right=0.8) #adjust for global colorbar
+    plt.clim(0, 1) #Colourbar limits
+    cbar_ax = fig.add_axes([0.85, 0.15, 0.05, 0.7])
+    cbar = fig.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cbar_ax, ticks = bounds) #plot colorbar
+    cbar.set_label('Concentration (ϕ)') #Gives colourbar a title
+    plt.suptitle('Task D: Advection & Diffusion') #title of plot
+    print("--- %s seconds ---" % (time.time() - start_time))
+    plt.show() #plot
+
+# Elif condition to run task B
+# elif ic_options.get() == "For 1D Problem":
