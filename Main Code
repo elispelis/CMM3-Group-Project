@@ -128,11 +128,11 @@ def plot_data():  # Function to plot our data
     avphi = getavrphimesh(x, y)  # Assigns our avphi values to plot
     plt.title('t= ' + str(i / 1000) + 's')  # Shows the time where the subplot was plotted
     plt.imshow(avphi, cmap=cmap,
-               extent=(x_min, x_max, y_min, y_max))  # Plot using imshow to display data as an image
+                extent=(x_min, x_max, y_min, y_max))  # Plot using imshow to display data as an image
 
 
 # If condition to run Task A
-if ic_options.get() == "For 2D Problem (Diffusive patch)" or "For 2D Problem (Non-zero velocity)":
+if ic_options.get() == "For 2D Problem (Diffusive patch)" or ic_options.get() == "For 2D Problem (Non-zero velocity)":
     print("Loading 2D Problem...")  # Print loading screen to let user know the code is still loading
     start_time = time.time()  # Start time to count how long program runs
 
@@ -191,6 +191,7 @@ if ic_options.get() == "For 2D Problem (Diffusive patch)" or "For 2D Problem (No
     plt.suptitle('Task A: Advection & Diffusion')  # Title of plot
     print("--- %s seconds ---" % (time.time() - start_time))  # Shows code running time
     plt.show()  # Show plot
+
 
 #Elif condition to run task D
 elif ic_options.get() == "For Chemical Spill Problem":
@@ -259,3 +260,4 @@ elif ic_options.get() == "For Chemical Spill Problem":
 
 # Elif condition to run task B
 # elif ic_options.get() == "For 1D Problem":
+
