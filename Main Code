@@ -178,7 +178,7 @@ if ic_options.get() == "For 2D Problem (Diffusive patch)" or ic_options.get() ==
             print(str(int(i / 55) * 10) + "%")  # Prints loading percentage
             avphi = getavrphimesh(x, y)  # Assigns our avphi values to plot
             axes.append(fig.add_subplot(2, 5, int(i / 55) + 1))
-            im = plt.imshow(avphi, cmap=cmap,
+            im = plt.imshow(avphi, cmap=cmap, 
                             extent=(x_min, x_max, y_min, y_max))  # Plot using imshow to display data as an image
             axes[-1].set_title('t= ' + str(i / 1000) + 's')  # Shows the time where the subplot was plotted
 
@@ -236,17 +236,18 @@ elif ic_options.get() == "For Chemical Spill Problem":
         y = np.where(y > y_max, 2 * y_max - y, y) 
         y = np.where(y < y_min, 2 * y_min - y, y)
 
-    avphi = getavrphimesh(x, y) #get phi data
-    affected = np.where(avphi>0.3,1,0) #all points above 0.3 given value of 1
-    marker += affected #save affected values to marker array
+        avphi = getavrphimesh(x, y) #get phi data
+        affected = np.where(avphi>0.3,1,0) #all points above 0.3 given value of 1
+        marker += affected #save affected values to marker array
     
-    #plot the data
-    if i%55 == 0:
-        marker = np.where(marker>=1,1,0) #turn all values equal or above 1 to 1
-        print(str(int(i/55)*10)+ "%") #Prints loading percentage
-        axes.append(fig.add_subplot(2,5,int(i/55)+1)) #add subplot
-        im = plt.imshow(marker, cmap=cmap, extent=(x_min, x_max, y_min, y_max)) #Plot using imshow to display data as an image
-        axes[-1].set_title('t= '+str(i/1000)+'s') #Shows the time where the subplot was plotted
+        #plot the data
+        if i%55 == 0:
+            marker = np.where(marker>=1,1,0) #turn all values equal or above 1 to 1
+            print(str(int(i/55)*10)+ "%") #Prints loading percentage
+            axes.append(fig.add_subplot(2,5,int(i/55)+1)) #add subplot
+            im = plt.imshow(marker, cmap=cmap, 
+                            extent=(x_min, x_max, y_min, y_max)) #Plot using imshow to display data as an image
+            axes[-1].set_title('t= '+str(i/1000)+'s') #Shows the time where the subplot was plotted
 
     fig.tight_layout()
     plt.subplots_adjust(right=0.8) #adjust for global colorbar
@@ -260,4 +261,3 @@ elif ic_options.get() == "For Chemical Spill Problem":
 
 # Elif condition to run task B
 # elif ic_options.get() == "For 1D Problem":
-
