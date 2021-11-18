@@ -77,9 +77,9 @@ label16 = Label(root, text="Number of Particles (Value entered will be to the po
 Entry(root, textvariable=NN).grid(row=16, column=1)
 Entry(root, textvariable=NN).insert(0, "17")
 
-label13 = Label(root, text=" ").grid(row=17, column=0)
+label17 = Label(root, text=" ").grid(row=17, column=0)
 
-label17 = Label(root, text="Choose problem type").grid(row=18, column=0)
+label18 = Label(root, text="Choose problem type").grid(row=18, column=0)
 ic_options = StringVar(root)
 ic_options.set("Click here to choose type")
 ic = OptionMenu(root, ic_options, "For 2D Problem (Diffusive patch)",
