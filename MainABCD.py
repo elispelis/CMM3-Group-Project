@@ -180,7 +180,6 @@ def getavrphimesh(x, y):
     avrphi = np.rot90(np.reshape(avrphi, [Nx, Ny]))
     return avrphi
 
-
 # given a coordinate, tells us what nearest velocity vector is
 def get_velocities(x, y):
     x_coordinates = np.floor((x - np.amin(x)) / (np.amax(x) - np.amin(x)) * (row_length - 1)).astype(
@@ -429,7 +428,7 @@ elif ic_options.get() == "For 1D Problem":
         plt.ylabel('Concentration')
         plt.grid() #Adding a grid to improve readability
         plt.legend() #Adds a legend according to the labels and colours already assigned in the plt.plot command
-        plt.show() #Show the plot
+    #    plt.show() #Show the plot
     
     f_avrphis = [] #Empty array to carry the concentration values for ALL configurations
     
@@ -497,5 +496,6 @@ elif ic_options.get() == "For 1D Problem":
         plt.plot(N_list,fit_RMSE, label = '"Fitted RMSE for %f stepsize" = %.3f*N^(%.3f)' %(h[j],a, b), linestyle='dashed') #Plotting fitted RMSE
         plt.title('RMSE vs Number of Particles at t = 0.2')
         plt.legend(loc = 'lower left') #Add a legend
-    
+        
+    plt.show()
     print("--- %s seconds ---" % (time.time() - start_time2))
