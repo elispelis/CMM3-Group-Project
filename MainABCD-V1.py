@@ -102,22 +102,22 @@ label19 = Label(root, text="Number of simulations:").grid(row=13, column=0)
 Entry(root, textvariable=avg_nn).grid(row=13, column=1)
 Entry(root, textvariable=avg_nn).insert(0, "5")
 
-label20= Label(root, text="For 1D Problem, Specify Several Number of Particles to be Considered :").grid(row=14, column=0)
+label20= Label(root, text="For 1D Problem, Specify Several Number of Particles to be Considered (Your input multiplied by 64):").grid(row=14, column=0)
 label21 = Label(root, text="Tip: Fill 'empty' fields with '0'.").grid(row=14, column=1)
 Entry(root, textvariable=avg_nnn1).grid(row=14, column=2)
-Entry(root, textvariable=avg_nnn1).insert(0, "1024")
+Entry(root, textvariable=avg_nnn1).insert(0, "100")
 
 Entry(root, textvariable=avg_nnn2).grid(row=14, column=3)
-Entry(root, textvariable=avg_nnn2).insert(0, "16000")
+Entry(root, textvariable=avg_nnn2).insert(0, "250")
 
 Entry(root, textvariable=avg_nnn3).grid(row=14, column=4)
-Entry(root, textvariable=avg_nnn3).insert(0, "56000")
+Entry(root, textvariable=avg_nnn3).insert(0, "875")
 
 Entry(root, textvariable=avg_nnn4).grid(row=14, column=5)
-Entry(root, textvariable=avg_nnn4).insert(0, "96000")
+Entry(root, textvariable=avg_nnn4).insert(0, "2375")
 
 Entry(root, textvariable=avg_nnn5).grid(row=14, column=6)
-Entry(root, textvariable=avg_nnn5).insert(0, "120000")
+Entry(root, textvariable=avg_nnn5).insert(0, "2500")
 
 label22 = Label(root, text="For 1D Problem, Specify Several Time Steps to be Considered:").grid(row=15, column=0)
 label23 = Label(root, text="Tip: Fill 'empty' fields with '0'.").grid(row=15, column=1)
@@ -178,7 +178,7 @@ circ_r = float(circle_radius.get()) # circles centre y coordinate
 
 # Task B specific inputs
 avg_n = int(avg_nn.get())
-N_list = [int(avg_nnn1.get()),int(avg_nnn2.get()),int(avg_nnn3.get()),int(avg_nnn4.get()),int(avg_nnn5.get())] #List of number of particles for which to run the simulation
+N_list = [64*int(avg_nnn1.get()),64*int(avg_nnn2.get()),64*int(avg_nnn3.get()),64*int(avg_nnn4.get()),64*int(avg_nnn5.get())] #List of number of particles for which to run the simulation
 
 for i in range(len(N_list)): #Remove zero values from the list
     try:
@@ -213,17 +213,6 @@ if ic_options.get() == "For 2D Problem (Diffusive patch)" or ic_options.get() ==
     
     if (circ_y - circ_r) < y_min or (circ_y + circ_r) > y_max:
         raise ValueError("Your circular patch lies outside the limits you have assigned. Try using a smaller radius or moving the vertex.")
-
-
-
-
-
-
-
-
-
-
-
 
 
 # Create a mesh and find the average phi values within it
@@ -405,6 +394,8 @@ elif ic_options.get() == "For 1D Problem":
             
         def __init__(self, N, h, avg_n, D):
             
+            self.ref = np.genfromtxt('reference_solution_1D.dat') #Get the reference solution
+            
             #Details
             self.t_max = 0.2 # Simulation time in seconds
             self.dt = h  # Step Size
@@ -412,7 +403,7 @@ elif ic_options.get() == "For 1D Problem":
             self.Nx = 64 #Euler Grid Size
             self.N = N #Number of particles for which to run the simulation
             self.avg_n = avg_n #Number of times for which to run the simulation for each configuration of time step and number of particles
-        
+            
             # Domain size
             self.x_min = -1 #Lower bound for x-values
             self.x_max = 1 #Upper bound for x-values
@@ -429,7 +420,6 @@ elif ic_options.get() == "For 1D Problem":
         def initial_values(self): #This function initialises the simulation with arrays that will be used  later on along with getting the reference solution 
             self.ones = np.ones(self.N)  #Array of ones for where function
             self.zeros = np.zeros(self.N)  #Array of zeros for where function
-            self.ref = np.genfromtxt('reference_solution_1D.dat') #Reads the reference solution CAN THIS BE KEPT OUTSIDE OF THE LOOP!!!!!!!!!
             self.x = np.random.uniform(self.x_min, self.x_max, size=self.N)  #Initial x-positions
             self.phi = np.where(self.x <= 0, self.ones, self.zeros) #Give x-coordinates phi values
         def sort_values(self): #This function sorts the arrays made in the initial_values function 
