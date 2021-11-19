@@ -221,7 +221,7 @@ if ic_options.get() == "For 2D Problem (Diffusive patch)" or ic_options.get() ==
                                                         64)  # colormap for graphing
 
     if ic_options.get() == "For 2D Problem (Diffusive patch)":
-        phi = np.where(np.sqrt((x + circle_x) ** 2 + (y - circle_y) ** 2) < 0.3, phi1,
+        phi = np.where(np.sqrt((x - circle_x) ** 2 + (y - circle_y) ** 2) < 0.3, phi1,
                        phi0)  # create circle for diffusive patch
     else:
         phi = np.where(x < 0, phi1, phi0)  # create separation between above and below x-axis
@@ -275,7 +275,7 @@ elif ic_options.get() == "For Chemical Spill Problem":
     x = np.random.uniform(x_min, x_max, size=N)  # x-positions
     y = np.random.uniform(y_min, y_max, size=N)  # y-positions
 
-    circle_x = -0.4  # circles centre x coordinate
+    circle_x = 0.4  # circles centre x coordinate
     circle_y = 0.4  # circles centre y coordinate
     
     marker = np.zeros((Nx,Ny)) #coordintes with all  0
@@ -285,7 +285,7 @@ elif ic_options.get() == "For Chemical Spill Problem":
     bounds = [0,0.3,1] #ticks for colorbar
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
     
-    phi = np.where(np.sqrt((x + circle_x) ** 2 + (y - circle_y) ** 2) < 0.1, phi1,
+    phi = np.where(np.sqrt((x - circle_x) ** 2 + (y - circle_y) ** 2) < 0.1, phi1,
                    phi0)  # create circle for diffusive patch
         
     fig = plt.figure() #initialise plot
