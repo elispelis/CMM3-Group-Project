@@ -182,7 +182,7 @@ N_list = [int(avg_nnn1.get()),int(avg_nnn2.get()),int(avg_nnn3.get()),int(avg_nn
 
 for i in range(len(N_list)): #Remove zero values from the list
     try:
-        N_list.remove(1) #1 is listed because all the entries are squared in the previous step
+        N_list.remove(0) 
     except:
         continue
 N_list.sort(reverse = True) #Sort from highest to lowest.
