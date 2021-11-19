@@ -228,6 +228,7 @@ if ic_options.get() == "For 2D Problem (Diffusive patch)" or ic_options.get() ==
 
     fig = plt.figure()
     axes = []
+    div = int(t_max/dt/9)#used to set subplot interval
 
     for i in np.linspace(0, int(t_max / dt), int(t_max / dt) + 1):
         v_x, v_y = get_velocities(x, y)
@@ -239,13 +240,13 @@ if ic_options.get() == "For 2D Problem (Diffusive patch)" or ic_options.get() ==
         y = np.where(y > y_max, 2 * y_max - y, y)
         y = np.where(y < y_min, 2 * y_min - y, y)
         # Plot the data
-        if i % 55 == 0:
-            print(str(int(i / 55) * 10) + "%")  # Prints loading percentage
+        if i % div == 0:
+            print(str(int(i / div) * 10) + "%")  # Prints loading percentage
             avphi = getavrphimesh(x, y)  # Assigns our avphi values to plot
-            axes.append(fig.add_subplot(2, 5, int(i / 55) + 1))
+            axes.append(fig.add_subplot(2, 5, int(i / div) + 1))
             im = plt.imshow(avphi, cmap=cmap, 
                             extent=(x_min, x_max, y_min, y_max))  # Plot using imshow to display data as an image
-            axes[-1].set_title('t= ' + str(i / 1000) + 's')  # Shows the time where the subplot was plotted
+            axes[-1].set_title('t= ' + str(i*dt) + 's')  # Shows the time where the subplot was plotted
 
     fig.tight_layout()
     plt.subplots_adjust(right=0.8)
@@ -289,7 +290,8 @@ elif ic_options.get() == "For Chemical Spill Problem":
         
     fig = plt.figure() #initialise plot
     axes = []
-    
+    div = int(t_max/dt/9)#used to set subplot interval
+
     for i in np.linspace(0, int(t_max/dt), int(t_max/dt)+1):
         v_x, v_y = get_velocities(x, y)
         x += v_x * dt + np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N) #Lagrange Diffusion and advection
@@ -306,13 +308,13 @@ elif ic_options.get() == "For Chemical Spill Problem":
         marker += affected #save affected values to marker array
     
         #plot the data
-        if i%55 == 0:
+        if i%div == 0:
             marker = np.where(marker>=1,1,0) #turn all values equal or above 1 to 1
-            print(str(int(i/55)*10)+ "%") #Prints loading percentage
-            axes.append(fig.add_subplot(2,5,int(i/55)+1)) #add subplot
+            print(str(int(i/div)*10)+ "%") #Prints loading percentage
+            axes.append(fig.add_subplot(2,5,int(i/div)+1)) #add subplot
             im = plt.imshow(marker, cmap=cmap, 
                             extent=(x_min, x_max, y_min, y_max)) #Plot using imshow to display data as an image
-            axes[-1].set_title('t= '+str(i/1000)+'s') #Shows the time where the subplot was plotted
+            axes[-1].set_title('t= '+str(i*dt)+'s') #Shows the time where the subplot was plotted
 
     fig.tight_layout()
     plt.subplots_adjust(right=0.8) #adjust for global colorbar
@@ -484,7 +486,7 @@ elif ic_options.get() == "For 1D Problem":
         fit_RMSE = [] #Empty array to carry fitted RMSE function 
     
         for z in N_list: #Getting values for the fitted RMSE solution at the same number of particles
-            fit_RMSE_int = fit_func(z, a, b) 
+            fit_RMSE_int = fit_func(z, a, b)
             fit_RMSE.append(fit_RMSE_int) 
     
         ax.set_xscale('log') #Set the x-axis to a logarithmic scale
