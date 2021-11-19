@@ -89,19 +89,19 @@ Entry(root, textvariable=avg_nn).insert(0, "5")
 label15= Label(root, text="For 1D Problem, Specify Several Number of Particles to be Considered :").grid(row=12, column=0)
 label15_a = Label(root, text="Tip: Fill 'empty' fields with '0'.").grid(row=12, column=1)
 Entry(root, textvariable=avg_nnn1).grid(row=12, column=2)
-Entry(root, textvariable=avg_nnn1).insert(0, "100000")
+Entry(root, textvariable=avg_nnn1).insert(0, "10")
 
 Entry(root, textvariable=avg_nnn2).grid(row=12, column=3)
-Entry(root, textvariable=avg_nnn2).insert(0, "120000")
+Entry(root, textvariable=avg_nnn2).insert(0, "11")
 
 Entry(root, textvariable=avg_nnn3).grid(row=12, column=4)
-Entry(root, textvariable=avg_nnn3).insert(0, "140000")
+Entry(root, textvariable=avg_nnn3).insert(0, "12")
 
 Entry(root, textvariable=avg_nnn4).grid(row=12, column=5)
-Entry(root, textvariable=avg_nnn4).insert(0, "160000")
+Entry(root, textvariable=avg_nnn4).insert(0, "13")
 
 Entry(root, textvariable=avg_nnn5).grid(row=12, column=6)
-Entry(root, textvariable=avg_nnn5).insert(0, "180000")
+Entry(root, textvariable=avg_nnn5).insert(0, "14")
 
 label16 = Label(root, text="For 1D Problem, Specify Several Time Steps to be Considered:").grid(row=13, column=0)
 label16_a = Label(root, text="Tip: Fill 'empty' fields with '0'.").grid(row=13, column=1)
@@ -160,7 +160,7 @@ N = int(NN.get())
 
 # Task B specific inputs
 avg_n = int(avg_nn.get())
-N_list = [int(avg_nnn1.get()), int(avg_nnn2.get()), int(avg_nnn3.get()), int(avg_nnn4.get()), int(avg_nnn5.get())] #List of number of particles for which to run the simulation
+N_list = [2 ** int(avg_nnn1.get()), 2 ** int(avg_nnn2.get()), 2 ** int(avg_nnn3.get()), 2 ** int(avg_nnn4.get()), 2 ** int(avg_nnn5.get())] #List of number of particles for which to run the simulation
 
 for i in range(len(N_list)): #Remove zero values from the list
     try:
