@@ -9,9 +9,8 @@ from scipy.optimize import curve_fit #Used to fit the errors to a curve
 root = Tk()
 root.title("Diffusion & Advection Interface")
 
-# Creating variables
+# Creating variables for Task A & D (2D Problems)
 DD = StringVar()  # float variable
-dtt = StringVar()  # float variable
 Nxx = StringVar()  # integer variable
 Nyy = StringVar()  # integer variable
 NN = StringVar()  # integer variable
@@ -20,20 +19,20 @@ x_maxx = StringVar()  # integer variable
 y_minn = StringVar()  # integer variable
 y_maxx = StringVar()  # integer variable
 t_maxx = StringVar()  # float variable
+
+
+#Creating variables for Task B(1D Problem)
 avg_nn = StringVar()  # integer variable
-
-#Task B
-avg_nnn1 = StringVar()
-avg_nnn2 = StringVar()
-avg_nnn3 = StringVar()
-avg_nnn4 = StringVar()
-avg_nnn5 = StringVar()
-
-h_step1 = StringVar()
-h_step2 = StringVar()
-h_step3 = StringVar()
-h_step4 = StringVar()
-h_step5 = StringVar()
+avg_nnn1 = StringVar() # integer variable
+avg_nnn2 = StringVar() # integer variable
+avg_nnn3 = StringVar() # integer variable
+avg_nnn4 = StringVar() # integer variable
+avg_nnn5 = StringVar() # integer variable
+h_step1 = StringVar() # float variable
+h_step2 = StringVar() # float variable
+h_step3 = StringVar() # float variable
+h_step4 = StringVar() # float variable
+h_step5 = StringVar() # float variable
 
 
 # Creating window to input the variables
@@ -47,94 +46,103 @@ label3 = Label(root, text="Simulation time:").grid(row=3, column=0)
 Entry(root, textvariable=t_maxx).grid(row=3, column=1)
 Entry(root, textvariable=t_maxx).insert(0, "0.5")
 
-label4 = Label(root, text="Nx:").grid(row=4, column=0)
-Entry(root, textvariable=Nxx).grid(row=4, column=1)
+label4 = Label(root, text="Timestep h (0.001 default, can be changed in dropdown):").grid(row=4, column=0)
+dtt_options = StringVar(root)
+dtt_options.set("0.001")
+dtt = OptionMenu(root, dtt_options, "0.001", "0.002", "0.003", "0.004",
+                "0.005").grid(row=4, column=1)
+
+label5 = Label(root, text="Nx:").grid(row=5, column=0)
+Entry(root, textvariable=Nxx).grid(row=5, column=1)
 Entry(root, textvariable=Nxx).insert(0, "64")
 
-label5 = Label(root, text="Ny:").grid(row=5, column=0)
-Entry(root, textvariable=Nyy).grid(row=5, column=1)
+label6 = Label(root, text="Ny:").grid(row=6, column=0)
+Entry(root, textvariable=Nyy).grid(row=6, column=1)
 Entry(root, textvariable=Nyy).insert(1, "64")
 
-label6 = Label(root, text="x_min:").grid(row=6, column=0)
-Entry(root, textvariable=x_minn).grid(row=6, column=1)
+label7 = Label(root, text="Domain limits:").grid(row=7, column=0)
+
+label8 = Label(root, text="lower x limit:").grid(row=7, column=1)
+Entry(root, textvariable=x_minn).grid(row=8, column=1)
 Entry(root, textvariable=x_minn).insert(0, "-1")
 
-label7 = Label(root, text="x_max:").grid(row=7, column=0)
-Entry(root, textvariable=x_maxx).grid(row=7, column=1)
+label9 = Label(root, text="upper x limit:").grid(row=7, column=2)
+Entry(root, textvariable=x_maxx).grid(row=8, column=2)
 Entry(root, textvariable=x_maxx).insert(0, "1")
 
-label8 = Label(root, text="y_min:").grid(row=8, column=0)
-Entry(root, textvariable=y_minn).grid(row=8, column=1)
+label10 = Label(root, text="lower y limit:").grid(row=7, column=3)
+Entry(root, textvariable=y_minn).grid(row=8, column=3)
 Entry(root, textvariable=y_minn).insert(0, "-1")
 
-label9 = Label(root, text="y_max:").grid(row=9, column=0)
-Entry(root, textvariable=y_maxx).grid(row=9, column=1)
+label11 = Label(root, text="upper y limit:").grid(row=7, column=4)
+Entry(root, textvariable=y_maxx).grid(row=8, column=4)
 Entry(root, textvariable=y_maxx).insert(0, "1")
 
-label10 = Label(root, text=" ").grid(row=10, column=0)
+label12 = Label(root, text=" ").grid(row=9, column=0)
 
-label11 = Label(root, text="Please input the desired parameters here if running 1D problem:").grid(row=11, column=0)
+label13 = Label(root, text="Please input the desired parameters here if running 1D problem:").grid(row=10, column=0)
 
-label12 = Label(root, text="Number of simulations:").grid(row=12, column=0)
-Entry(root, textvariable=avg_nn).grid(row=12, column=1)
+label4 = Label(root, text="Number of simulations:").grid(row=11, column=0)
+Entry(root, textvariable=avg_nn).grid(row=11, column=1)
 Entry(root, textvariable=avg_nn).insert(0, "5")
 
-label13 = Label(root, text="For 1D Problem, Specify Several Number of Particles to be Considered (2^(Your Input)):").grid(row=13, column=0)
-label131 = Label(root, text="Tip: Fill 'empty' fields with '0'.").grid(row=13, column=1)
-Entry(root, textvariable=avg_nnn1).grid(row=13, column=2)
-Entry(root, textvariable=avg_nnn1).insert(0, "10")
+label15= Label(root, text="For 1D Problem, Specify Several Number of Particles to be Considered :").grid(row=12, column=0)
+label15_a = Label(root, text="Tip: Fill 'empty' fields with '0'.").grid(row=12, column=1)
+Entry(root, textvariable=avg_nnn1).grid(row=12, column=2)
+Entry(root, textvariable=avg_nnn1).insert(0, "100000")
 
-Entry(root, textvariable=avg_nnn2).grid(row=13, column=3)
-Entry(root, textvariable=avg_nnn2).insert(0, "11")
+Entry(root, textvariable=avg_nnn2).grid(row=12, column=3)
+Entry(root, textvariable=avg_nnn2).insert(0, "120000")
 
-Entry(root, textvariable=avg_nnn3).grid(row=13, column=4)
-Entry(root, textvariable=avg_nnn3).insert(0, "12")
+Entry(root, textvariable=avg_nnn3).grid(row=12, column=4)
+Entry(root, textvariable=avg_nnn3).insert(0, "140000")
 
-Entry(root, textvariable=avg_nnn4).grid(row=13, column=5)
-Entry(root, textvariable=avg_nnn4).insert(0, "13")
+Entry(root, textvariable=avg_nnn4).grid(row=12, column=5)
+Entry(root, textvariable=avg_nnn4).insert(0, "160000")
 
-Entry(root, textvariable=avg_nnn5).grid(row=13, column=6)
-Entry(root, textvariable=avg_nnn5).insert(0, "14")
+Entry(root, textvariable=avg_nnn5).grid(row=12, column=6)
+Entry(root, textvariable=avg_nnn5).insert(0, "180000")
 
-label14 = Label(root, text="For 1D Problem, Specify Several Time Steps to be Considered:").grid(row=14, column=0)
-label141 = Label(root, text="Tip: Fill 'empty' fields with '0'.").grid(row=14, column=1)
-Entry(root, textvariable=h_step1).grid(row=14, column=2)
+label16 = Label(root, text="For 1D Problem, Specify Several Time Steps to be Considered:").grid(row=13, column=0)
+label16_a = Label(root, text="Tip: Fill 'empty' fields with '0'.").grid(row=13, column=1)
+Entry(root, textvariable=h_step1).grid(row=13, column=2)
 Entry(root, textvariable=h_step1).insert(0, "0.01")
 
-Entry(root, textvariable=h_step2).grid(row=14, column=3)
+Entry(root, textvariable=h_step2).grid(row=13, column=3)
 Entry(root, textvariable=h_step2).insert(0, "0.02")
 
-Entry(root, textvariable=h_step3).grid(row=14, column=4)
+Entry(root, textvariable=h_step3).grid(row=13, column=4)
 Entry(root, textvariable=h_step3).insert(0, "0.04")
 
-Entry(root, textvariable=h_step4).grid(row=14, column=5)
+Entry(root, textvariable=h_step4).grid(row=13, column=5)
 Entry(root, textvariable=h_step4).insert(0, "0.05")
 
-Entry(root, textvariable=h_step5).grid(row=14, column=6)
+Entry(root, textvariable=h_step5).grid(row=13, column=6)
 Entry(root, textvariable=h_step5).insert(0, "0.1")
 
-label14 = Label(root, text=" ").grid(row=15, column=0)
+label17 = Label(root, text=" ").grid(row=14, column=0)
 
-label15 = Label(root, text="Please input parameters here when running any problem").grid(row=16, column=0)
+label18 = Label(root, text="Please input parameters here when running any problem").grid(row=15, column=0)
 
-label16 = Label(root, text="Timestep h:").grid(row=17, column=0)
-Entry(root, textvariable=dtt).grid(row=17, column=1)
-Entry(root, textvariable=dtt).insert(0, "0.001")
+label19 = Label(root, text="Number of Particles:").grid(row=16, column=0)
+Entry(root, textvariable=NN).grid(row=16, column=1)
+Entry(root, textvariable=NN).insert(0, "150000")
 
-label17 = Label(root, text="Number of Particles (Value entered will be to the power of 2):").grid(row=18, column=0)
-Entry(root, textvariable=NN).grid(row=18, column=1)
-Entry(root, textvariable=NN).insert(0, "17")
+label20 = Label(root, text="Choose velocity type").grid(row=17, column=0)
+vel_options = StringVar(root)
+vel_options.set("Click here to choose type")
+vel = OptionMenu(root, vel_options, "Zero velocity", "Read from velocity file").grid(row=17, column=1)
 
-label18 = Label(root, text=" ").grid(row=19, column=0)
-
-label19 = Label(root, text="Choose problem type").grid(row=20, column=0)
+label20 = Label(root, text="Choose problem type").grid(row=18, column=0)
 ic_options = StringVar(root)
 ic_options.set("Click here to choose type")
 ic = OptionMenu(root, ic_options, "For 2D Problem (Diffusive patch)",
                 "For 2D Problem (Non-zero velocity)", "For Chemical Spill Problem",
-                "For 1D Problem").grid(row=20, column=1)
+                "For 1D Problem").grid(row=18, column=1)
 
-Confirm = Button(root, text="Confirm inputs", fg="black", command=root.destroy).grid(row=21, column=1)
+label21 = Label(root, text=" ").grid(row=19, column=0)
+
+Confirm = Button(root, text="Confirm inputs", fg="black", command=root.destroy).grid(row=20, column=1)
 root.mainloop()
 
 # Takes in variables from inputs in the GUI
@@ -144,14 +152,15 @@ x_max = float(x_maxx.get())
 y_min = float(y_minn.get())
 y_max = float(y_maxx.get())
 t_max = float(t_maxx.get())
-dt = float(dtt.get())
+dt = float(dtt_options.get())
 Nx = int(Nxx.get())
 Ny = int(Nyy.get())
-N = 2 ** int(NN.get())
-avg_n = int(avg_nn.get())
+N = int(NN.get())
+
 
 # Task B specific inputs
-N_list = [2 ** int(avg_nnn1.get()), 2 ** int(avg_nnn2.get()), 2 ** int(avg_nnn3.get()), 2 ** int(avg_nnn4.get()), 2 ** int(avg_nnn5.get())] #List of number of particles for which to run the simulation
+avg_n = int(avg_nn.get())
+N_list = [int(avg_nnn1.get()), int(avg_nnn2.get()), int(avg_nnn3.get()), int(avg_nnn4.get()), int(avg_nnn5.get())] #List of number of particles for which to run the simulation
 
 for i in range(len(N_list)): #Remove zero values from the list
     try:
@@ -177,8 +186,11 @@ def getavrphimesh(x, y):
     unq, ids, count = np.unique(grancoord, return_inverse=True, return_counts=True, axis=0)
     avrphi = np.bincount(ids, phi) / count
     avrphi = np.delete(avrphi, [0, 1])
+    # avrphi = np.reshape(avrphi, [Nx, Ny])
     avrphi = np.rot90(np.reshape(avrphi, [Nx, Ny]))
+    avrphi = np.reshape(avrphi, [Nx, Ny])
     return avrphi
+
 
 # given a coordinate, tells us what nearest velocity vector is
 def get_velocities(x, y):
@@ -254,7 +266,8 @@ if ic_options.get() == "For 2D Problem (Diffusive patch)" or ic_options.get() ==
     cbar = fig.colorbar(im, cax=cbar_ax)
     cbar.set_label('Concentration (ϕ)')  # Gives colourbar a title
     plt.suptitle('Task A: Advection & Diffusion')  # Title of plot
-    print("--- %s seconds ---" % (time.time() - start_time))  # Shows code running time
+    print("100% Simulation complete")
+    print("---Total time taken: %s seconds ---" % (time.time() - start_time))  # Shows code running time
     plt.show()  # Show plot
 
 
@@ -322,7 +335,8 @@ elif ic_options.get() == "For Chemical Spill Problem":
     cbar = fig.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap), cax=cbar_ax, ticks = bounds) #plot colorbar
     cbar.set_label('Concentration (ϕ)') #Gives colourbar a title
     plt.suptitle('Task D: Advection & Diffusion') #title of plot
-    print("--- %s seconds ---" % (time.time() - start_time))
+    print("100% Simulation complete")
+    print("---Total time taken: %s seconds ---" % (time.time() - start_time))
     plt.show() #plot
 
 # Elif condition to run task B
@@ -428,7 +442,7 @@ elif ic_options.get() == "For 1D Problem":
         plt.ylabel('Concentration')
         plt.grid() #Adding a grid to improve readability
         plt.legend() #Adds a legend according to the labels and colours already assigned in the plt.plot command
-    #    plt.show() #Show the plot
+        plt.show() #Show the plot
     
     f_avrphis = [] #Empty array to carry the concentration values for ALL configurations
     
@@ -496,6 +510,5 @@ elif ic_options.get() == "For 1D Problem":
         plt.plot(N_list,fit_RMSE, label = '"Fitted RMSE for %f stepsize" = %.3f*N^(%.3f)' %(h[j],a, b), linestyle='dashed') #Plotting fitted RMSE
         plt.title('RMSE vs Number of Particles at t = 0.2')
         plt.legend(loc = 'lower left') #Add a legend
-        
-    plt.show()
-    print("--- %s seconds ---" % (time.time() - start_time2))
+    print("Simulation complete")
+    print("---Total time taken: %s seconds ---" % (time.time() - start_time2))
