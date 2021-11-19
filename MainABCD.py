@@ -137,7 +137,7 @@ label20 = Label(root, text="Choose problem type").grid(row=18, column=0)
 ic_options = StringVar(root)
 ic_options.set("Click here to choose type")
 ic = OptionMenu(root, ic_options, "For 2D Problem (Diffusive patch)",
-                "For 2D Problem (Non-zero velocity)", "For Chemical Spill Problem",
+                "For 2D Problem (Rectangles)", "For Chemical Spill Problem",
                 "For 1D Problem").grid(row=18, column=1)
 
 label21 = Label(root, text=" ").grid(row=19, column=0)
@@ -208,7 +208,7 @@ def get_velocities(x, y):
     return x_velocities, y_velocities
 
 # If condition to run Task A
-if ic_options.get() == "For 2D Problem (Diffusive patch)" or ic_options.get() == "For 2D Problem (Non-zero velocity)":
+if ic_options.get() == "For 2D Problem (Diffusive patch)" or ic_options.get() == "For 2D Problem (Rectangles)":
     print("Loading 2D Problem...")  # Print loading screen to let user know the code is still loading
     start_time = time.time()  # Start time to count how long program runs
 
@@ -241,8 +241,11 @@ if ic_options.get() == "For 2D Problem (Diffusive patch)" or ic_options.get() ==
     axes = []
     div = int(t_max/dt/9)#used to set subplot interval
 
-    for i in np.linspace(0, int(t_max / dt), int(t_max / dt) + 1):
-        v_x, v_y = get_velocities(x, y)
+    for i in np.linspace(0, int(t_max / dt)-1, int(t_max / dt)):
+        if vel_options.get() == "Read from velocity file":
+            v_x, v_y = get_velocities(x, y)
+        else:
+            v_x = v_y = 0
         x += v_x * dt + np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N)  # Lagrange Diffusion and advection
         y += v_y * dt + np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N)  # Lagrange Diffusion and advection
         # Bounce particles off boundary walls: if coord is beyond boundary, make it be as much as it exceeded boundary
@@ -304,8 +307,11 @@ elif ic_options.get() == "For Chemical Spill Problem":
     axes = []
     div = int(t_max/dt/9)#used to set subplot interval
 
-    for i in np.linspace(0, int(t_max/dt), int(t_max/dt)+1):
-        v_x, v_y = get_velocities(x, y)
+    for i in np.linspace(0, int(t_max/dt)-1, int(t_max/dt)):
+        if vel_options.get() == "Read from velocity file":
+            v_x, v_y = get_velocities(x, y)
+        else:
+            v_x = v_y = 0
         x += v_x * dt + np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N) #Lagrange Diffusion and advection
         y += v_y * dt + np.sqrt(2 * D * dt) * np.random.normal(0, 1, size=N) #Lagrange Diffusion and advection
         #Bounce particles off boundary walls: if coord is beyond boundary, set it 
