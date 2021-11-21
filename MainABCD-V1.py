@@ -13,6 +13,7 @@ root.title("Diffusion & Advection Interface")
 DD = StringVar()  # float variable
 NxNy = StringVar()  # integer variable
 NN = StringVar()  # integer variable
+phi_limm = StringVar() #float variable
 x_minn = StringVar()  # integer variable
 x_maxx = StringVar()  # integer variable
 y_minn = StringVar()  # integer variable
@@ -133,27 +134,32 @@ Entry(root, textvariable=h_step5).insert(0, "0.1")
 
 label24 = Label(root, text=" ").grid(row=16, column=0)
 
-label25 = Label(root, text="Please input parameters here when running any 2D problem").grid(row=17, column=0)
+label25 = Label(root, text="Please input parameters here when running 2D problems:").grid(row=17, column=0)
 
 label26 = Label(root, text="Number of Particles:").grid(row=18, column=0)
 Entry(root, textvariable=NN).grid(row=18, column=1)
 Entry(root, textvariable=NN).insert(0, "150000")
 
-label27 = Label(root, text="Choose velocity type").grid(row=19, column=0)
+label30 = Label(root, text="Concentration limit in chemical spill:").grid(row=19, column=0)
+Entry(root, textvariable=phi_limm).grid(row=19, column=1)
+Entry(root, textvariable=phi_limm).insert(0, "0.3")
+
+
+label27 = Label(root, text="Choose velocity type").grid(row=20, column=0)
 vel_options = StringVar(root)
 vel_options.set("Click here to choose type")
-vel = OptionMenu(root, vel_options, "Zero velocity", "Read from velocity file").grid(row=19, column=1)
+vel = OptionMenu(root, vel_options, "Zero velocity", "Read from velocity file").grid(row=20, column=1)
 
-label28 = Label(root, text="Choose problem type").grid(row=20, column=0)
+label28 = Label(root, text="Choose problem type").grid(row=21, column=0)
 ic_options = StringVar(root)
 ic_options.set("Click here to choose type")
 ic = OptionMenu(root, ic_options, "For 2D Problem (Diffusive patch)",
                 "For 2D Problem (Rectangles)", "For Chemical Spill Problem",
-                "For 1D Problem").grid(row=20, column=1)
+                "For 1D Problem").grid(row=21, column=1)
 
-label29 = Label(root, text=" ").grid(row=21, column=0)
+label29 = Label(root, text=" ").grid(row=22, column=0)
 
-Confirm = Button(root, text="Confirm inputs", fg="black", command=root.destroy).grid(row=22, column=1)
+Confirm = Button(root, text="Confirm inputs", fg="black", command=root.destroy).grid(row=23, column=1)
 root.mainloop()
 
 # Takes in variables from inputs in the GUI
@@ -167,6 +173,7 @@ dt = float(dtt_options.get())
 Nx = int(NxNy.get())
 Ny = int(NxNy.get())
 N = int(NN.get())
+phi_lim = float(phi_limm.get())
 circ_x = float(circle_x.get())
 circ_y = float(circle_y.get()) # circles centre x coordinate
 circ_r = float(circle_radius.get()) # circles centre y coordinate
@@ -323,7 +330,7 @@ elif ic_options.get() == "For Chemical Spill Problem":
     phi1 = np.ones(N)  # Array of ones for where function
     phi0 = np.zeros(N)  # Array of zeros for where function
     cmap = mpl.colors.ListedColormap(["red", "blue"])  # colormap for graphing
-    bounds = [0,0.3,1] #ticks for colorbar
+    bounds = [0,phi_lim,1] #ticks for colorbar
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
     
     phi = np.where(np.sqrt((x - circ_x) ** 2 + (y - circ_y) ** 2) < circ_r, phi1,
@@ -348,7 +355,7 @@ elif ic_options.get() == "For Chemical Spill Problem":
         y = np.where(y < y_min, 2 * y_min - y, y)
 
         avphi = getavrphimesh(x, y) #get phi data
-        affected = np.where(avphi>0.3,1,0) #all points above 0.3 given value of 1
+        affected = np.where(avphi>phi_lim,1,0) #all points above phi_lim given value of 1
         marker += affected #save affected values to marker array
     
         #plot the data
