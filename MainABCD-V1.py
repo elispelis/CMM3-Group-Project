@@ -11,8 +11,7 @@ root.title("Diffusion & Advection Interface")
 
 # Creating variables for Task A & D (2D Problems)
 DD = StringVar()  # float variable
-Nxx = StringVar()  # integer variable
-Nyy = StringVar()  # integer variable
+NxNy = StringVar()  # integer variable
 NN = StringVar()  # integer variable
 x_minn = StringVar()  # integer variable
 x_maxx = StringVar()  # integer variable
@@ -54,21 +53,17 @@ dtt_options.set("0.001")
 dtt = OptionMenu(root, dtt_options, "0.001", "0.002", "0.003", "0.004",
                 "0.005").grid(row=4, column=1)
 
-label5 = Label(root, text="Nx:").grid(row=5, column=0)
-Entry(root, textvariable=Nxx).grid(row=5, column=1)
-Entry(root, textvariable=Nxx).insert(0, "64")
-
-label6 = Label(root, text="Ny:").grid(row=6, column=0)
-Entry(root, textvariable=Nyy).grid(row=6, column=1)
-Entry(root, textvariable=Nyy).insert(1, "64")
+label5 = Label(root, text="Grid sixe (Nx,Ny):").grid(row=5, column=0)
+Entry(root, textvariable=NxNy).grid(row=5, column=1)
+Entry(root, textvariable=NxNy).insert(0, "64")
 
 label7 = Label(root, text="Circular Patch Specifications:").grid(row=7, column=0)
 
-label8 = Label(root, text="Vertex x-value:").grid(row=7, column=1)
+label8 = Label(root, text="Center x-value:").grid(row=7, column=1)
 Entry(root, textvariable=circle_x).grid(row=8, column=1)
 Entry(root, textvariable=circle_x).insert(0, "0")
 
-label9 = Label(root, text="Vertex y-value:").grid(row=7, column=2)
+label9 = Label(root, text="Center y-value:").grid(row=7, column=2)
 Entry(root, textvariable=circle_y).grid(row=8, column=2)
 Entry(root, textvariable=circle_y).insert(0, "0")
 
@@ -169,8 +164,8 @@ y_min = float(y_minn.get())
 y_max = float(y_maxx.get())
 t_max = float(t_maxx.get())
 dt = float(dtt_options.get())
-Nx = int(Nxx.get())
-Ny = int(Nyy.get())
+Nx = int(NxNy.get())
+Ny = int(NxNy.get())
 N = int(NN.get())
 circ_x = float(circle_x.get())
 circ_y = float(circle_y.get()) # circles centre x coordinate
