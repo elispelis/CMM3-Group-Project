@@ -296,7 +296,7 @@ if ic_options.get() == "For 2D Problem (Diffusive patch)" or ic_options.get() ==
             axes.append(fig.add_subplot(2, 5, int(i / div) + 1))
             im = plt.imshow(avphi, cmap=cmap, 
                             extent=(x_min, x_max, y_min, y_max))  # Plot using imshow to display data as an image
-            axes[-1].set_title('t= ' + str(i*dt) + 's')  # Shows the time where the subplot was plotted
+            axes[-1].set_title('t= ' + round(str(i*dt),3) + 's')  # Shows the time where the subplot was plotted
 
     fig.tight_layout()
     plt.subplots_adjust(right=0.8)
@@ -365,7 +365,7 @@ elif ic_options.get() == "For Chemical Spill Problem":
             axes.append(fig.add_subplot(2,5,int(i/div)+1)) #add subplot
             im = plt.imshow(marker, cmap=cmap, 
                             extent=(x_min, x_max, y_min, y_max)) #Plot using imshow to display data as an image
-            axes[-1].set_title('t= '+str(i*dt)+'s') #Shows the time where the subplot was plotted
+            axes[-1].set_title('t= '+ round(str(i*dt),3)+'s') #Shows the time where the subplot was plotted
 
     fig.tight_layout()
     plt.subplots_adjust(right=0.8) #adjust for global colorbar
