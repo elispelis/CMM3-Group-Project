@@ -62,15 +62,15 @@ label7 = Label(root, text="Circular Patch Specifications:").grid(row=7, column=0
 
 label8 = Label(root, text="Center x-value:").grid(row=7, column=1)
 Entry(root, textvariable=circle_x).grid(row=8, column=1)
-Entry(root, textvariable=circle_x).insert(0, "0")
+Entry(root, textvariable=circle_x).insert(0, "0.4")
 
 label9 = Label(root, text="Center y-value:").grid(row=7, column=2)
 Entry(root, textvariable=circle_y).grid(row=8, column=2)
-Entry(root, textvariable=circle_y).insert(0, "0")
+Entry(root, textvariable=circle_y).insert(0, "0.4")
 
 label10 = Label(root, text="Circle Radius:").grid(row=7, column=3)
 Entry(root, textvariable=circle_radius).grid(row=8, column=3)
-Entry(root, textvariable=circle_radius).insert(0, "0.3")
+Entry(root, textvariable=circle_radius).insert(0, "0.1")
 
 label12 = Label(root, text="Domain limits:").grid(row=9, column=0)
 
