@@ -7,10 +7,11 @@ observed over time with each subplot.
 
 The simulation has a loading message from 0 to 100% to assure the
 user that the program is still running. Once it is complete, the
-relevant plots will show.
+relevant plots and simulation run-time will be displayed.
 
 It was written by Dean Sammanthan, Elis Bright, Samir Mohamed,
-Zhang Li and Finn Murphy
+Zhang Li and Finn Murphy.
+
 (c) 2021 Dean Sammanthan
 (c) 2021 Elis Bright
 (c) 2021 Samir Mohamed
