@@ -27,8 +27,8 @@ import matplotlib.pyplot as plt  # Used to plot the relevant plots
 import numpy as np  # Used to manipulate arrays and perform matrix operations
 from scipy.optimize import curve_fit # Used to fit the errors to a curve
 
-root = Tk()
-root.title("Diffusion & Advection Interface")
+root = Tk() # Initialise Tkinter
+root.title("Diffusion & Advection Interface") # Give our GUI window a title
 
 # Creating variables for Task A & D sections in GUI (2D Problems)
 DD = StringVar()  # Float variable
