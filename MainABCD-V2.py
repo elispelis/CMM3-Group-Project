@@ -541,7 +541,6 @@ elif ic_options.get() == "For 1D Problem":
         plt.ylabel('Concentration') # Y-axis label
         plt.grid() # Adding a grid to improve readability
         plt.legend() # Adds a legend according to the labels and colours already assigned in the plt.plot command
-        plt.show() # Show the plot
     
     f_avrphis = [] # Empty array to carry the concentration values for ALL configurations  
     
@@ -597,6 +596,7 @@ elif ic_options.get() == "For 1D Problem":
             plt.plot(N_list,fit_RMSE, label = '"Fitted RMSE for %f stepsize" = %.3f*N^(%.3f)' %(h[j],a, b), linestyle='dashed') # Plotting fitted RMSE
             plt.title('RMSE vs Number of Particles at t = 0.2')
             plt.legend(loc = 'lower left') #Add a legend
-            
+
     print("Simulation complete")
     print("---Total time taken: %s seconds ---" % (time.time() - start_time2))
+    plt.show()
