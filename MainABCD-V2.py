@@ -536,7 +536,7 @@ elif ic_options.get() == "For 1D Problem":
                 plt.plot(x, phi2_int, marker='.', label='dT = %f and N = %.0f' %(h[i], N_list[z])) # Plot our values and label them with time step and number of particles
         
         plt.plot(ref[:, 0], ref[:, 1], color='Black', label = 'Reference at t = 0.2 s', linewidth=4.0, alpha=0.4) # Plot reference solution (with thicker line but a little transparent)   
-        plt.title('Concentration vs Position at t = 0.2') # Plot title
+        plt.title('Concentration vs Position at t = 0.2s') # Plot title
         plt.xlabel('Position') # X-axis label
         plt.ylabel('Concentration') # Y-axis label
         plt.grid() # Adding a grid to improve readability
@@ -594,7 +594,7 @@ elif ic_options.get() == "For 1D Problem":
             plt.ylabel('RMSE')
             plt.plot(N_list,pl_rmse, marker='.', label='Averaged RMSE over %0.d runs for %f step size' %(avg_n, h[j])) # Plotting calculated RMSE
             plt.plot(N_list,fit_RMSE, label = '"Fitted RMSE for %f stepsize" = %.3f*N^(%.3f)' %(h[j],a, b), linestyle='dashed') # Plotting fitted RMSE
-            plt.title('RMSE vs Number of Particles at t = 0.2')
+            plt.title('RMSE vs Number of Particles at t = 0.2s')
             plt.legend(loc = 'lower left') #Add a legend
 
     print("Simulation complete")
