@@ -1,8 +1,28 @@
+'''Diffusion & Advection Simulator
+
+This code simulates fluid diffusion and advection by taking in  
+user-specified inputs and plots this for a visual overview.
+It shows the concentration in each grid and the diffusion can be
+observed over time with each subplot.
+
+The simulation has a loading message from 0 to 100% to assure the
+user that the program is still running. Once it is complete, the
+relevant plots will show.
+
+It was written by Dean Sammanthan, Elis Bright, Samir Mohamed,
+Zhang Li and Finn Murphy
+(c) 2021 Dean Sammanthan
+(c) 2021 Elis Bright
+(c) 2021 Samir Mohamed
+(c) 2021 Zhang Li
+(c) 2021 Finn Murphy
+'''
+
 #Import relevant packages and modules 
 import sys # Used to exit the execution of the code when certain user inputs are made
 import time # Used to show the user the time a certain piece of code took to run
-from tkinter import *
-import matplotlib as mpl
+from tkinter import * # Used for our GUI
+import matplotlib as mpl # Used for our colourmap in our plots
 import matplotlib.pyplot as plt  # Used to plot the relevant plots
 import numpy as np  # Used to manipulate arrays and perform matrix operations
 from scipy.optimize import curve_fit #Used to fit the errors to a curve
@@ -175,9 +195,9 @@ Nx = int(NxNy.get())
 Ny = int(NxNy.get())
 N = int(NN.get())
 phi_lim = float(phi_limm.get())
-circ_x = float(circle_x.get())
-circ_y = float(circle_y.get()) # circles centre x coordinate
-circ_r = float(circle_radius.get()) # circles centre y coordinate
+circ_x = float(circle_x.get()) # circles centre x coordinate
+circ_y = float(circle_y.get()) # circles centre y coordinate
+circ_r = float(circle_radius.get()) # circles radius
 
 # Task B specific inputs
 avg_n = int(avg_nn.get())
@@ -198,8 +218,6 @@ for i in range(len(h)): #Remove zero values from the list
         except:
             continue    
 h.sort() #Sort from lowest to highest
-
-
 
 #ERRORS SECTION - Raises errors when inputs are contradictory or problematic
     
@@ -266,7 +284,6 @@ if ic_options.get() == "For 1D Problem": #The number of particles list determine
     
     if len(h) == 0:
         raise ValueError("You have no inputs for the step sizes you would like to consider. Please insert at least 1 to produce plots of concentration vs. position and error vs. 'number of particles'.")
-
 
 #END OF ERRORS SECTION
 
