@@ -164,7 +164,6 @@ label30 = Label(root, text="Concentration limit in chemical spill:").grid(row=19
 Entry(root, textvariable=phi_limm).grid(row=19, column=1)
 Entry(root, textvariable=phi_limm).insert(0, "0.3")
 
-
 label27 = Label(root, text="Choose velocity type").grid(row=20, column=0)
 vel_options = StringVar(root)
 vel_options.set("Click here to choose type")
@@ -295,7 +294,6 @@ def getavrphimesh(x, y):
     avrphi = np.reshape(avrphi, [Nx, Ny])
     return avrphi
 
-
 # Given a coordinate, tells us what nearest velocity vector is
 def get_velocities(x, y):
     x_coordinates = np.floor((x - np.amin(x)) / (np.amax(x) - np.amin(x)) * (row_length - 1)).astype(int)
@@ -371,7 +369,6 @@ if ic_options.get() == "For 2D Problem (Diffusive patch)" or ic_options.get() ==
     print("100% Simulation complete") # Print completion message
     print("---Total time taken: %s seconds ---" % (time.time() - start_time)) # Shows code running time
     plt.show() # Show plot
-
 
 #Elif condition to run task D
 elif ic_options.get() == "For Chemical Spill Problem":
@@ -479,8 +476,7 @@ elif ic_options.get() == "For 1D Problem":
                 self.loop() # Function that is defined in the next section
                 self.compute() # Function that is defined in the next section
                 self.loop2() # Function that is defined in the next section
-             
-        
+                
         def initial_values(self): # This function initialises the simulation with arrays that will be used  later on along with getting the reference solution 
             self.ones = np.ones(self.N)  # Array of ones for where function
             self.zeros = np.zeros(self.N)  # Array of zeros for where function
@@ -546,17 +542,13 @@ elif ic_options.get() == "For 1D Problem":
         plt.legend() # Adds a legend according to the labels and colours already assigned in the plt.plot command
         plt.show() # Show the plot
     
-    f_avrphis = [] # Empty array to carry the concentration values for ALL configurations
-    
-    
+    f_avrphis = [] # Empty array to carry the concentration values for ALL configurations  
     
     for i in h:
        avrphis = [] # Empty array to hold the concentration values for configurations of same time step 
        for j in N_list:
            avrphis.append(TaskB(j, i, avg_n, D).avrphi) # Adds the concentration values to the empty array just created
-       f_avrphis.append(avrphis) # Adds the concentration values to the empty f_avrphis array for ALL time steps and ALL number of particles
-        
-    
+       f_avrphis.append(avrphis) # Adds the concentration values to the empty f_avrphis array for ALL time steps and ALL number of particles    
     
     plot(np.genfromtxt('reference_solution_1D.dat'), -1, 1, 64, f_avrphis) # Plots the reference solution along with f_avrphis
     
